@@ -242,10 +242,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seed: 0
   useRandomSeed: 0
-  width: 5
-  length: 10
-  height: 2
+  width: 10
+  length: 20
+  height: 4
   windowProbability: 0.2
+  minPartitionSize: 1
+  maxPartitionSize: 3
+  RectangleToRemove: 8
+  m: 55
 --- !u!4 &668056279
 Transform:
   m_ObjectHideFlags: 0
