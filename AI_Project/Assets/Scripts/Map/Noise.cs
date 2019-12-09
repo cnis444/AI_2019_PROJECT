@@ -5,11 +5,8 @@ using UnityEngine;
 public static class Noise
 {
 
-    public enum NormalizeMode { Local, Global}
-
     public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed, float scale,
-        int octaves, float persistance, float lacunarity, Vector2 offset,
-        NormalizeMode normalizeMode)
+        int octaves, float persistance, float lacunarity, Vector2 offset)
     {
 
         float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -55,7 +52,7 @@ public static class Noise
                 for (int i = 0; i < octaves; i++)
                 {
                     float sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
-                    float sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency ;
+                    float sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
 
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;
@@ -76,13 +73,8 @@ public static class Noise
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                if(normalizeMode == NormalizeMode.Local)
-                    noiseMap[x, y] = Mathf.InverseLerp(minLocalNoiseHeight, maxLocalNoiseHeight, noiseMap[x, y]);
-                else
-                {
-                    float noralizedHeight = (noiseMap[x, y] + 1) / (2f * maxPossibleHeight / 2.2f);
-                    noiseMap[x, y] = Mathf.Clamp(noralizedHeight, 0, int.MaxValue);
-                }
+                float noralizedHeight = (noiseMap[x, y] + 1) / (2f * maxPossibleHeight / 2.2f);
+                noiseMap[x, y] = Mathf.Clamp(noralizedHeight, 0, int.MaxValue);
             }
         }
         return noiseMap;
