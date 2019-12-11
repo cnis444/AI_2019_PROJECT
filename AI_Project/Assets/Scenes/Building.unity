@@ -250,6 +250,12 @@ MonoBehaviour:
   maxPartitionSize: 3
   RectangleToRemove: 8
   m: 55
+  wallPrefab: {fileID: 7224425985603403001, guid: 570d95e306501e043a7b3963b09c0570,
+    type: 3}
+  wallPrefabDim: {x: 1, y: 1, z: 1}
+  roofPrefab: {fileID: 2725991629843081017, guid: 6cc1b1c1428fdf04fa8e91fdae96a60d,
+    type: 3}
+  roofPrefabDim: {x: 1, y: 1, z: 1}
 --- !u!4 &668056279
 Transform:
   m_ObjectHideFlags: 0

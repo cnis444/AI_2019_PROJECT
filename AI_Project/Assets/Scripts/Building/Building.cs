@@ -19,6 +19,11 @@ public class Building : MonoBehaviour
     List<RectInt> rects;
     Area area;
 
+    public GameObject wallPrefab;
+    public Vector3 wallPrefabDim;
+    public GameObject roofPrefab;
+    public Vector3 roofPrefabDim;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,14 +34,13 @@ public class Building : MonoBehaviour
 
         partition = new SpacePartition(new RectInt(0, 0, width, length), minPartitionSize, maxPartitionSize, Random.Range(-1000000, 1000000));
         rects = partition.GetSpaces();
-
-        //InitSpace();
-        //InitWalls();
+        
         stages = new List<Wall>[height];
         for (int k = 0; k < height; k++) {
             RemoveSpace();
             BuildArea();
             BuildWall(k);
+            Build(k);
         }
 
         // Set a door
@@ -54,7 +58,7 @@ public class Building : MonoBehaviour
     void Update()
     {
         DebugSquare();
-        DebugPartition();
+        //DebugPartition();
         foreach (List<Wall> walls in stages) {
             foreach (Wall w in walls) {
                 DebugWall(w);
@@ -92,7 +96,7 @@ public class Building : MonoBehaviour
         for (int k = 0; k < RectangleToRemove; k++) {
             int idx = Random.Range(0, border.Count);
             RectInt rect = border[idx];
-            Debug.Log(string.Format("Deleting rectangle {0}", rect));
+            //Debug.Log(string.Format("Deleting rectangle {0}", rect));
             border.RemoveAt(idx);
 
             // Some rectangles from the inside are now on the border
@@ -109,10 +113,6 @@ public class Building : MonoBehaviour
 
     void BuildWall(int h) {
         List<Vector3> corners = new List<Vector3>();
-        //corners.Add(new Vector3(0, k, 0));
-        //corners.Add(new Vector3(width, k, 0));
-        //corners.Add(new Vector3(width, k, length));
-        //corners.Add(new Vector3(0, k, length));
         for (int i = 0; i < area.Main.Count; i++) {
             corners.Add(new Vector3(area.Main[i].x, h, area.Main[i].y));
         }
@@ -132,6 +132,37 @@ public class Building : MonoBehaviour
             area.Add(rects[i]);
         }
         Debug.Log(string.Format("area has {0} points", area.Main.Count));
+    }
+
+    void Build(int h) {
+        // Instanciate walls
+        foreach (Wall wall in stages[h]) {
+            Vector3 dir = Vector3.Normalize(wall.end - wall.start);
+            for (int i = 0; i < wall.types.Length; i++) {
+                Vector3 pos = (wall.start + i * dir + wallPrefabDim.x / 2 * dir.normalized) * wallPrefabDim.x;
+                pos.y *= wallPrefabDim.y;
+                Vector3 rot = new Vector3(0, Vector3.SignedAngle(Vector3.right, dir, Vector3.up), 0);
+                var w = Instantiate(wallPrefab);
+                w.transform.localPosition = pos;
+                w.transform.parent = transform;
+                w.transform.Rotate(rot);
+            }
+        }
+
+        // Instanciate roofs
+        foreach (RectInt r in rects) {
+            for (int x = r.xMin; x < r.xMax; x++) {
+                for (int z = r.yMin; z < r.yMax; z++) {
+                    Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
+                    Vector3 pos = new Vector3((x + roofPrefabDim.x / 2) * roofPrefabDim.x, wallPrefabDim.y * (h + 1) * roofPrefabDim.y, (z + roofPrefabDim.z / 2) * roofPrefabDim.z);
+                    if (area.Contain(loc, true)) {
+                        var roof = Instantiate(roofPrefab);
+                        roof.transform.parent = transform;
+                        roof.transform.localPosition = pos;
+                    }
+                }
+            }
+        }
     }
 
     #region Debug
