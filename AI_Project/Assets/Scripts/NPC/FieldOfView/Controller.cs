@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Controller : MonoBehaviour {
 
 	public float moveSpeed = 6;

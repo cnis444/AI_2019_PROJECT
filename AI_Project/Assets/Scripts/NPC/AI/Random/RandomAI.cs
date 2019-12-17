@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public class RandomAI : NPC
@@ -16,30 +17,19 @@ public class RandomAI : NPC
         StartCoroutine("Move", delay);
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            StopCoroutine("Move");
-        }
-
-    }
-
-
-    public override Vector3 UpdateMove()
+    public Vector3 NextDst()
     {
         Vector3 dst = new Vector3(Random.Range(-moveRange, moveRange), 0, Random.Range(-moveRange, moveRange));
-        Debug.Log(dst);
         return dst;
     }
 
     IEnumerator Move(float delay)
     {
-
+        agent.SetDestination(NextDst());
         while (true)
         {
             yield return new WaitForSeconds(delay);
-            agent.SetDestination(UpdateMove());
+            agent.SetDestination(NextDst());
             
         }
     }
