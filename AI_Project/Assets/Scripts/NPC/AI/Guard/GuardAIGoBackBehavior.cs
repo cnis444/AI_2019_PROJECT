@@ -15,6 +15,7 @@ public class GuardAIGoBackBehavior : StateMachineBehaviour
         }
         guard.Agent.SetDestination(guard.GuardStartPosition);
     }
+
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (guard.Agent.remainingDistance < 0.6f)

@@ -486,6 +486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   infoCanvas: {fileID: 1863633823730262634}
+  persistance: 4
 --- !u!1 &7732153559058256602
 GameObject:
   m_ObjectHideFlags: 0
