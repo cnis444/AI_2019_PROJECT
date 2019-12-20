@@ -4,22 +4,27 @@ using UnityEngine;
 
 public class ButtonMenu : MonoBehaviour
 {
-    public GameObject menuPanel;
-    public GameObject optionPanel;
-    public GameObject editPanel;
+
+    public List<GameObject> panels = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
-        menuPanel.SetActive(true);
-        optionPanel.SetActive(false);
-        editPanel.SetActive(false);
+        ActiveOnePanel(panels[0]);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void ActiveOnePanel(GameObject panel)
+    {
+        foreach (GameObject p in panels)
+        {
+            p.SetActive(p == panel);
+        }
     }
 
     #region START BUTTON
@@ -33,26 +38,11 @@ public class ButtonMenu : MonoBehaviour
 
     #region EDIT BUTTON
 
-    public void Edit()
-    {
-        Debug.Log("edit WIP");
-        editPanel.SetActive(true);
-        menuPanel.SetActive(false);
-        optionPanel.SetActive(false);
-    }
 
     #endregion
 
     #region OPTION BUTTON
 
-    public void Option()
-    {
-        Debug.Log("option WIP");
-        optionPanel.SetActive(true);
-        menuPanel.SetActive(false);
-        editPanel.SetActive(false);
-       
-    }
 
     #endregion 
 
@@ -61,13 +51,6 @@ public class ButtonMenu : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
-    }
-
-    public void Back()
-    {
-        menuPanel.SetActive(true);
-        editPanel.SetActive(false);
-        optionPanel.SetActive(false);
     }
 
     #endregion
