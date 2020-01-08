@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8089832899000454034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8089832899000454032}
+  - component: {fileID: 8089832899000454033}
+  m_Layer: 0
+  m_Name: Building
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8089832899000454032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8089832899000454034}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8089832899000454033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8089832899000454034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19b5016ea571e824bb61c7e3bd9623ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seed: 0
+  useRandomSeed: 0
+  width: 10
+  length: 20
+  height: 4
+  windowProbability: 0.2
+  minPartitionSize: 1
+  maxPartitionSize: 3
+  RectangleToRemove: 8
+  m: 55
+  wallPrefab: {fileID: 7224425985603403001, guid: 570d95e306501e043a7b3963b09c0570,
+    type: 3}
+  wallPrefabDim: {x: 1, y: 1, z: 1}
+  roofPrefab: {fileID: 2725991629843081017, guid: 6cc1b1c1428fdf04fa8e91fdae96a60d,
+    type: 3}
+  roofPrefabDim: {x: 1, y: 1, z: 1}

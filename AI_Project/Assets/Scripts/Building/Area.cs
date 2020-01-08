@@ -35,7 +35,8 @@ public class Area
     }
 
     public bool Contain(Vector2 point, bool mainAreaOnly = false) {
-        float angle = Mathf.PI / 41;
+        //float angle = Mathf.PI / 41; // radian
+        float angle = 0.2f; // radian
         Vector2 u = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
         //Debug.DrawLine(new Vector3(point.x, 0, point.y), new Vector3(point.x + 20 * u.x, 0, point.y + 20 * u.y), Color.magenta, 300);
         Vector2 c = point, d = u;
@@ -43,6 +44,8 @@ public class Area
         for (int k = 0; k < stop; k++) {
             int cpt = 0;
             bool badSituation = false;
+            int infiniteLoopProtect = 0;
+            int loopThreshold = 1000;
             do {
                 for (int i = 0; i < vertices[k].Count - 1; i++) {
                     if (PointsAreAligned(point, point + u, vertices[k][i], vertices[k][i + 1])) {
@@ -68,7 +71,12 @@ public class Area
                         cpt++;
                     }
                 }
-            } while (badSituation);
+                infiniteLoopProtect++;
+            } while (badSituation && infiniteLoopProtect < loopThreshold);
+
+            if (infiniteLoopProtect >= loopThreshold) {
+                Debug.LogWarning(string.Format("Loop threshold reached while testing point {0}", point));
+            }
 
             if ((cpt & 1) == 1) { // true if cpt is odd
                 //Debug.Log(string.Format("Area contains {0} ({1} intersections)", point, cpt));
@@ -316,41 +324,12 @@ public class Area
         // Add points to the main area
 
         List<Vector2> list = new List<Vector2>();
-        // First point
-        if (area[areaIndices[0]] == vertices[addTo][mainIndices[0]]) {
-            vertices[addTo].RemoveAt(mainIndices[0]);
-            for (int i = 0; i < mainIndices.Length; i++) {
-                if (mainIndices[i] >= mainIndices[0]) {
-                    mainIndices[i]--;
-                }
-            }
-            //Debug.Log(string.Format("Step {0}: Delete first (idx: {1}, pos: {2})", step, areaIndices[0], area[areaIndices[0]]));
-        }
-        else {
-            list.Add(area[areaIndices[0]]);
-            //Debug.Log(string.Format("Step {0}: Add first (idx: {1}, pos: {2})", step, areaIndices[0], area[areaIndices[0]]));
-        }
-        // Intermediate points
-        for (int i = areaIndices[0] + 1; i < area.Count + areaIndices[0] - areaIndices.Length + 1; i++) {
+        // Add points from first to last
+        for (int i = areaIndices[0]; i < area.Count + areaIndices[0] - areaIndices.Length + 2; i++) {
             list.Add(area[i % area.Count]);
             //Debug.Log(string.Format("Step {0}: Add intermediate (idx: {1}, pos: {2})", step, i % area.Count, area[i % area.Count]));
         }
-        // Last point (if different from the first one)
-        if (areaIndices[areaIndices.Length - 1] != areaIndices[0]) {
-            if (area[areaIndices[areaIndices.Length - 1]] == vertices[addTo][mainIndices[mainIndices.Length - 1]]) {
-                vertices[addTo].RemoveAt(mainIndices[mainIndices.Length - 1]);
-                for (int i = 0; i < mainIndices.Length; i++) {
-                    if (mainIndices[i] >= mainIndices[mainIndices.Length - 1]) {
-                        mainIndices[i]--;
-                    }
-                }
-                //Debug.Log(string.Format("Step {0}: Delete last (idx: {1}, pos: {2})", step, areaIndices[areaIndices.Length - 1], area[areaIndices[areaIndices.Length - 1]]));
-            }
-            else {
-                list.Add(area[areaIndices[areaIndices.Length - 1]]);
-                //Debug.Log(string.Format("Step {0}: Add last (idx: {1}, pos: {2})", step, areaIndices[areaIndices.Length - 1], area[areaIndices[areaIndices.Length - 1]]));
-            }
-        }
+
         // Points between last and first
         for (int i = 1; i < areaIndices.Length - 1; i++) {
             if (area[areaIndices[i]] == vertices[addTo][mainIndices[i]]) {
@@ -368,6 +347,43 @@ public class Area
         }
         //Debug.Log(string.Format("Step {0}: inserting {1} points at index {2}/{3}", step, list.Count, mainIndices[0] + 1 /*% vertices[addTo].Count*/, vertices[addTo].Count));
         vertices[addTo].InsertRange((mainIndices[0] + 1)/* % vertices[addTo].Count*/, list);
+
+
+        // Remove doubles
+        List<int> indices = new List<int>();
+        int last = vertices[addTo].Count - 1;
+        for (int i = 0; i < last; i++) {
+            if (vertices[addTo][i] == vertices[addTo][i+1]) {
+                indices.Add(i);
+            }
+        }
+        if (vertices[addTo][last] == vertices[addTo][0]) {
+            indices.Add(last);
+        }
+        indices.Sort();
+        for (int i = indices.Count - 1; i >= 0; i--) {
+            vertices[addTo].RemoveAt(indices[i]);
+        }
+
+        // Remove useless points
+        indices = new List<int>();
+        last = vertices[addTo].Count - 1;
+        if (PointsAreAligned(vertices[addTo][last], vertices[addTo][0], vertices[addTo][1])) {
+            indices.Add(0);
+        }
+        for (int i = 1; i < last; i++) {
+            if (PointsAreAligned(vertices[addTo][i-1], vertices[addTo][i], vertices[addTo][i+1])) {
+                indices.Add(i);
+            }
+        }
+        if (PointsAreAligned(vertices[addTo][last - 1], vertices[addTo][last], vertices[addTo][0])) {
+            indices.Add(last);
+        }
+        indices.Sort();
+        for (int i = indices.Count - 1; i >= 0; i--) {
+            vertices[addTo].RemoveAt(indices[i]);
+        }
+
 
         // Try to add secondary areas to the main area;
         if (vertices.Count > 1) {

@@ -11,7 +11,9 @@ public class Building : MonoBehaviour
     [Range(0,1)]
     public float windowProbability;
     public int minPartitionSize, maxPartitionSize;
-    public int RectangleToRemove;
+    public int rectangleToRemove;
+    [Range(0,1)]
+    public float volumeReduction;
     public int m;
 
     List<Wall>[] stages;
@@ -24,20 +26,29 @@ public class Building : MonoBehaviour
     public GameObject roofPrefab;
     public Vector3 roofPrefabDim;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Generating building");
         if (useRandomSeed) {
             seed = (int)System.DateTime.Now.Ticks;
         }
         Random.InitState(seed);
 
+        System.DateTime start = System.DateTime.Now;
+
         partition = new SpacePartition(new RectInt(0, 0, width, length), minPartitionSize, maxPartitionSize, Random.Range(-1000000, 1000000));
         rects = partition.GetSpaces();
-        
+        int count = Mathf.FloorToInt(rects.Count * volumeReduction);
+        Debug.Log("floorToInt " + count);
+        //rectangleToRemove = Mathf.FloorToInt(rects.Count * volumeReduction);
+        //Debug.Log("floorToInt done");
+
         stages = new List<Wall>[height];
         for (int k = 0; k < height; k++) {
-            RemoveSpace();
+            RemoveSpace(count);
             BuildArea();
             BuildWall(k);
             Build(k);
@@ -52,19 +63,21 @@ public class Building : MonoBehaviour
                 w.AddWindows(windowProbability);
             }
         }
+
+        Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
     }
 
     // Update is called once per frame
     void Update()
     {
         DebugSquare();
-        //DebugPartition();
-        foreach (List<Wall> walls in stages) {
-            foreach (Wall w in walls) {
-                DebugWall(w);
-            }
-        }
-        //DebugArea();
+        DebugPartition();
+        //foreach (List<Wall> walls in stages) {
+        //    foreach (Wall w in walls) {
+        //        DebugWall(w);
+        //    }
+        //}
+        DebugArea();
     }
 
     void InitSpace() {
@@ -81,6 +94,11 @@ public class Building : MonoBehaviour
     }
 
     void RemoveSpace() {
+        RemoveSpace(rectangleToRemove);
+    }
+
+    void RemoveSpace(int count) {
+        //Debug.Log("Removing space");
         List<RectInt> border = new List<RectInt>();
         List<RectInt> inside = new List<RectInt>();
         foreach (RectInt r in rects) {
@@ -91,24 +109,51 @@ public class Building : MonoBehaviour
                 inside.Add(r);
             }
         }
-
+         
         // Delete some rectangles on the border
-        for (int k = 0; k < RectangleToRemove; k++) {
+        for (int k = 0; k < Mathf.Min(count, rects.Count); k++) {
             int idx = Random.Range(0, border.Count);
             RectInt rect = border[idx];
             //Debug.Log(string.Format("Deleting rectangle {0}", rect));
             border.RemoveAt(idx);
-
+            
             // Some rectangles from the inside are now on the border
-            for (int i = inside.Count - 1; i >= 0; i--) {
+            for (int i = inside.Count - 1; i >= 0; i--) { // from last to first
                 if (Area.TouchingEdges(rect, inside[i]).Count > 0) {
-                    border.Add(inside[i]);
-                    inside.RemoveAt(i);
+                    //print("switching");
+                    border.Add(inside[i]); // /!\ Bug here
+                    inside.RemoveAt(i);    // /!\ or here
                 }
             }
+
+            //List<RectInt> remove = new List<RectInt>();
+            //foreach (RectInt r in inside) {
+            //    if (Area.TouchingEdges(rect, r).Count > 0) {
+            //        border.Add(r);
+            //        remove.Add(r);
+            //    }
+            //}
+            //Debug.Log("inside: " + ListToString(inside));
+            //Debug.Log("remove: " + ListToString(remove));
+            //if (m < 64) {
+            //    Debug.Log("removing");
+            //    foreach(RectInt r in remove) { inside.Remove(r); }
+            //}
+            //m++;
         }
         rects = border;
         rects.AddRange(inside);
+        
+    }
+
+    string ListToString<T>(List<T> l) {
+        if (l.Count == 0) { return "(0)<Empty>"; }
+        string s = "(" + l.Count + ")<" + l[0];
+        for (int i = 1; i < l.Count; i++) {
+            s += ", " + l[i];
+        }
+        s += ">";
+        return s;
     }
 
     void BuildWall(int h) {
@@ -127,11 +172,12 @@ public class Building : MonoBehaviour
     void BuildArea() {
         // Build the area
         area = new Area();
-        Debug.Log(string.Format("{0} rectangles remaining", rects.Count));
+        //Debug.Log(string.Format("{0} rectangles remaining", rects.Count));
+        //for (int i = 0; i < m; i++) {
         for (int i = 0; i < rects.Count; i++) {
             area.Add(rects[i]);
         }
-        Debug.Log(string.Format("area has {0} points", area.Main.Count));
+        //Debug.Log(string.Format("area has {0} points: {1}", area.Main.Count, ListToString<Vector2>(area.Main)));
     }
 
     void Build(int h) {
@@ -225,6 +271,22 @@ public class Building : MonoBehaviour
 
     void DebugArea() {
 
+        if (m < rects.Count) {
+            RectInt r = rects[m];
+            Vector3 v1 = new Vector3(r.xMin, 0, r.yMin);
+            Vector3 v2 = new Vector3(r.xMin, 0, r.yMax);
+            Vector3 v3 = new Vector3(r.xMax, 0, r.yMax);
+            Vector3 v4 = new Vector3(r.xMax, 0, r.yMin);
+            Debug.DrawLine(v1, v2, Color.green);
+            Debug.DrawLine(v2, v3, Color.green);
+            Debug.DrawLine(v3, v4, Color.green);
+            Debug.DrawLine(v4, v1, Color.green);
+            Debug.DrawLine(v1, v1 + Vector3.up, Color.green);
+            Debug.DrawLine(v2, v2 + Vector3.up, Color.green);
+            Debug.DrawLine(v3, v3 + Vector3.up, Color.green);
+            Debug.DrawLine(v4, v4 + Vector3.up, Color.green);
+        }
+
         foreach (List<Vector2> points in area.Surfaces) {
             //List<Vector2> points = area.Main;
             for (int i = 0; i < points.Count - 1; i++) {
@@ -235,18 +297,6 @@ public class Building : MonoBehaviour
             }
             Debug.DrawLine(new Vector3(points[points.Count - 1].x, 0, points[points.Count - 1].y), new Vector3(points[0].x, 0, points[0].y), Color.magenta);
             Debug.DrawLine(new Vector3(points[points.Count - 1].x, 0, points[points.Count - 1].y), new Vector3(points[points.Count - 1].x, 0.5f, points[points.Count - 1].y), Color.magenta);
-        }
-
-        if (m < rects.Count) {
-            RectInt r = rects[m];
-            Vector3 v1 = new Vector3(r.xMin, 0, r.yMin);
-            Vector3 v2 = new Vector3(r.xMin, 0, r.yMax);
-            Vector3 v3 = new Vector3(r.xMax, 0, r.yMax);
-            Vector3 v4 = new Vector3(r.xMax, 0, r.yMin);
-            Debug.DrawLine(v1, v2, Color.yellow);
-            Debug.DrawLine(v2, v3, Color.yellow);
-            Debug.DrawLine(v3, v4, Color.yellow);
-            Debug.DrawLine(v4, v1, Color.yellow);
         }
     }
 
