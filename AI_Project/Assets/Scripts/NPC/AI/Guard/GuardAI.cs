@@ -5,8 +5,6 @@ using UnityEngine.AI;
 
 public class GuardAI : NPC
 {
-
-
     public float persistance;
     Vector3 startPos;
     int onSightHash;

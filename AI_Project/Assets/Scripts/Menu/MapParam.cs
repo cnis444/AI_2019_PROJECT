@@ -14,4 +14,6 @@ public class MapParam : ScriptableObject
     public float highCoeff;
     public List<TerrainType> regions;
 
+
+
 }

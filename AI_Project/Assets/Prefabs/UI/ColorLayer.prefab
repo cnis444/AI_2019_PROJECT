@@ -471,6 +471,7 @@ GameObject:
   m_Component:
   - component: {fileID: 212151018354221393}
   - component: {fileID: 2685314111709858108}
+  - component: {fileID: 8366511588789888941}
   m_Layer: 5
   m_Name: ColorLayer
   m_TagString: Untagged
@@ -528,6 +529,24 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &8366511588789888941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6051184422178897838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1b557c2731cfad448e355e5d4f80437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  regionName: {fileID: 460336634304472013}
+  color: {fileID: 541127869802825959}
+  value: {fileID: 889858769008270762}
+  up: {fileID: 5349560492461533818}
+  down: {fileID: 4265794370560762914}
+  del: {fileID: 6940066768720144800}
 --- !u!1 &8132707199585436372
 GameObject:
   m_ObjectHideFlags: 0
