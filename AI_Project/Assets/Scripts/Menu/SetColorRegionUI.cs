@@ -17,9 +17,9 @@ public class SetColorRegionUI : MonoBehaviour
         regionName.text = n;
     }
 
-    public void setColor(Color n)
+    public void setColor(Color32 n)
     {
-        color.color = new Color32((byte)n.r, (byte)n.g, (byte)n.b, (byte)255);
+        color.color = new Color32(n.r, n.g, n.b, (byte)255);
     }
 
     public void setValue(float v)

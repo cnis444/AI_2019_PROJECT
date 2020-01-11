@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class ButtonMenu : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class ButtonMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(Application.productName);
         setUp = GameObject.Find("SetUp");
         ActiveOnePanel(panels[0]);
     }
@@ -115,6 +117,7 @@ public class ButtonMenu : MonoBehaviour
 
     public void NameMap(string s)
     {
+        selectedMap.mapName = s;
         selectedMap.name = s;
     }
 
@@ -269,6 +272,13 @@ public class ButtonMenu : MonoBehaviour
         {
             customMap = true;
             ActiveOnePanel(panels[2]);
+            string save = JsonUtility.ToJson(selectedMap);
+            string path = Application.persistentDataPath+"/"+selectedMap.name+".json";
+            Debug.Log(path);
+            File.WriteAllText(path, save);
+            #if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+            #endif
         }
 
         Debug.Log(
@@ -322,7 +332,6 @@ public class ButtonMenu : MonoBehaviour
         {
             v = 0;
         }
-        nexTerrainType.colour.r = (byte)v;
         Color32 tmp = colorPreview.GetComponent<Image>().color;
         colorPreview.GetComponent<Image>().color = new Color32((byte)v, tmp.g, tmp.b, tmp.a);
     }
@@ -338,9 +347,23 @@ public class ButtonMenu : MonoBehaviour
         {
             v = 0;
         }
-        nexTerrainType.colour.g = (byte)v;
         Color32 tmp = colorPreview.GetComponent<Image>().color;
         colorPreview.GetComponent<Image>().color = new Color32(tmp.r, (byte)v, tmp.b, tmp.a);
+    }
+
+    public void SetBColor(string s)
+    {
+        int v = 0;
+        try
+        {
+            v = int.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (System.Exception)
+        {
+            v = 0;
+        }
+        Color32 tmp = colorPreview.GetComponent<Image>().color;
+        colorPreview.GetComponent<Image>().color = new Color32(tmp.r, tmp.g, (byte)v, tmp.a);
     }
 
     public void AddNewColorREgion()
@@ -353,7 +376,7 @@ public class ButtonMenu : MonoBehaviour
             alertMsg += "\n\t name invalid";
         }
 
-        if (nexTerrainType.colour == null)
+        if (nexTerrainType.colour == null || colorPreview == null)
         {
             error = true;
             alertMsg += "\n\t color invalid";
@@ -375,13 +398,15 @@ public class ButtonMenu : MonoBehaviour
         }
         else
         {
-            selectedMap.regions.Add(nexTerrainType);
+            Color32 tmpColor = colorPreview.GetComponent<Image>().color;
             GameObject tmp = Instantiate(terrainTypeUIPrefab) as GameObject;
             SetColorRegionUI tmpUI = tmp.GetComponent<SetColorRegionUI>();
             tmpUI.setName(nexTerrainType.name);
             tmpUI.setValue(nexTerrainType.height);
-            tmpUI.setColor(nexTerrainType.colour);
+            tmpUI.setColor(tmpColor);
             tmp.transform.SetParent(customColorHolder.transform);
+            nexTerrainType.colour = new Color32(tmpColor.r, tmpColor.g, tmpColor.b, (byte)255);
+            selectedMap.regions.Add(nexTerrainType);
         }
 
         Debug.Log(
