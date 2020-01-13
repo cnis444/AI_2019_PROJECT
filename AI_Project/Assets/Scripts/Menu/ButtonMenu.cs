@@ -122,7 +122,7 @@ public class ButtonMenu : MonoBehaviour
         }
         setUp.GetComponent<SetUp>().mapParam = selectedMap;
 
-        SceneManager.LoadScene("Ced");
+        SceneManager.LoadScene("MapGeneration");
     }
 
     private void HideAll()
