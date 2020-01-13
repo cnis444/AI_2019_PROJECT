@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6dbaf5663be4f14e8ed5766e250d8f7, type: 3}
-  m_Name: testMap4
+  m_Name: Messa
   m_EditorClassIdentifier: 
-  mapName: test4
-  octave: 0
-  persistance: 0
-  lacunarity: 0
-  seed: 0
-  chunks: 0
-  highCoeff: 0
+  mapName: Messa
+  octave: 2
+  persistance: 2
+  lacunarity: 2
+  seed: 2
+  chunks: 2
+  highCoeff: 2
   regions: []

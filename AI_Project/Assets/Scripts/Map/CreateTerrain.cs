@@ -23,6 +23,21 @@ public class CreateTerrain : MonoBehaviour
         mapGenerator = FindObjectOfType<MapGenerator>();
         chunkSize = MapGenerator.mapChunkSize - 1;
 
+        SetUp set = GameObject.Find("SetUp").GetComponent<SetUp>();
+
+        mapGenerator.name = set.mapParam.mapName;
+        mapGenerator.octave = set.mapParam.octave;
+        mapGenerator.persistance = set.mapParam.persistance;
+        mapGenerator.lacunarity = set.mapParam.lacunarity;
+        mapGenerator.seed = set.mapParam.seed;
+        numberOfChunk = set.mapParam.chunks;
+        mapGenerator.meshHeightMultiplier = set.mapParam.highCoeff;
+        mapGenerator.regions = new TerrainType[set.mapParam.regions.Count];
+        for (int i = 0; i < set.mapParam.regions.Count; i++)
+        {
+            mapGenerator.regions[i] = set.mapParam.regions[i];
+        }
+
         CreateWorld();
         HandleText.RunProcess("test.txt");
 

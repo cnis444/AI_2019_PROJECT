@@ -9,6 +9,8 @@ public class ButtonMenu : MonoBehaviour
 {
     //pass data to generate map
     private GameObject setUp;
+    private DatasMapFile mapFiles;
+    public List<MapParam> defaultMap;
 
     //all the panels
     public List<GameObject> panels = new List<GameObject>();
@@ -28,11 +30,47 @@ public class ButtonMenu : MonoBehaviour
     //Prefab
     public GameObject terrainTypeUIPrefab;
 
+    public void Awake()
+    {
+        string filePath = Path.Combine(Application.persistentDataPath, "mapDatas.json");
+        if (!File.Exists(filePath))
+        {
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Maps"));
+            Debug.Log("first");
+            Debug.Log(filePath);
+            mapFiles.datas = new List<string>();
+            mapFiles.datas.Add("Island");
+            mapFiles.datas.Add("Messa");
+            mapFiles.datas.Add("Snow");
+            Debug.Log(mapFiles.datas.Count);
+            string save = JsonUtility.ToJson(mapFiles);
+            Debug.Log(save);
+            File.WriteAllText(filePath, save);
+            #if UNITY_EDITOR
+                UnityEditor.AssetDatabase.Refresh();        
+            #endif
+
+            foreach (MapParam item in defaultMap)
+            {
+                string mapFile = Path.Combine(Application.persistentDataPath,"Maps", item.mapName + ".json");
+                string mapJSON = JsonUtility.ToJson(item);
+                File.WriteAllText(mapFile, mapJSON);
+            }
+
+        }
+        else
+        {
+            Debug.Log("not first");
+            string dataAsJson = File.ReadAllText(filePath);
+            mapFiles = JsonUtility.FromJson<DatasMapFile>(dataAsJson);
+            Debug.Log(mapFiles.datas.Count);
+        }
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(Application.productName);
         setUp = GameObject.Find("SetUp");
         ActiveOnePanel(panels[0]);
     }
@@ -55,14 +93,18 @@ public class ButtonMenu : MonoBehaviour
     {
         mapChoice.ClearOptions();
         mapParams.Clear();
-        MapParam[] allMapParams = Resources.LoadAll<MapParam>("");
-        List<string> optionNames = new List<string>();
-        foreach (MapParam item in allMapParams)
+        foreach (string map in mapFiles.datas)
         {
-            optionNames.Add(item.mapName);
-            mapParams.Add(item);
+            string filePath = Path.Combine(Application.persistentDataPath,"Maps", map);
+            if (!File.Exists(filePath))
+            {
+                string dataAsJson = File.ReadAllText(filePath+".json");
+                MapParam tmp = new MapParam();
+                JsonUtility.FromJsonOverwrite(dataAsJson, tmp);
+                mapParams.Add(tmp);
+            }
         }
-        mapChoice.AddOptions(optionNames);
+        mapChoice.AddOptions(mapFiles.datas);
     }
 
     public void ActiveToolTip(bool b)
@@ -78,7 +120,7 @@ public class ButtonMenu : MonoBehaviour
         {
             SetMapChoice();
         }
-        setUp.GetComponent<SetUp>().mapParam = customMap ? selectedMap : mapParams[0];
+        setUp.GetComponent<SetUp>().mapParam = selectedMap;
 
         SceneManager.LoadScene("Ced");
     }
@@ -273,9 +315,12 @@ public class ButtonMenu : MonoBehaviour
             customMap = true;
             ActiveOnePanel(panels[2]);
             string save = JsonUtility.ToJson(selectedMap);
-            string path = Application.persistentDataPath+"/"+selectedMap.name+".json";
+            string path = Path.Combine(Application.persistentDataPath, "Maps",selectedMap.name + ".json");
             Debug.Log(path);
             File.WriteAllText(path, save);
+
+            mapFiles.datas.Add(selectedMap.mapName);
+            File.WriteAllText(Path.Combine(Application.persistentDataPath, "mapDatas.json"), JsonUtility.ToJson(mapFiles));
             #if UNITY_EDITOR
             UnityEditor.AssetDatabase.Refresh();
             #endif
@@ -438,4 +483,10 @@ public class ButtonMenu : MonoBehaviour
 
 
 
+}
+
+[SerializeField]
+struct DatasMapFile
+{
+    public List<string> datas;
 }
