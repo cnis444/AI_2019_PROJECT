@@ -11,22 +11,26 @@ public class Building : MonoBehaviour
     [Range(0,1)]
     public float windowProbability;
     public int minPartitionSize, maxPartitionSize;
-    public int rectangleToRemove;
+    private int rectangleToRemove = 0;
     [Range(0,1)]
     public float volumeReduction;
-    public int m;
+    private int m = 0;
 
     List<Wall>[] stages;
+    List<RectInt>[] stagesRect;
+    Area[] stagesArea;
     SpacePartition partition;
     List<RectInt> rects;
     Area area;
 
-    public GameObject wallPrefab;
-    public Vector3 wallPrefabDim;
-    public GameObject roofPrefab;
-    public Vector3 roofPrefabDim;
+    Vector2 elevatorPos;
 
+    //public GameObject wallPrefab;
+    //public Vector3 wallPrefabDim;
+    //public GameObject roofPrefab;
+    //public Vector3 roofPrefabDim;
 
+    public BuildingTheme theme;
 
     // Start is called before the first frame update
     void Start()
@@ -47,11 +51,12 @@ public class Building : MonoBehaviour
         //Debug.Log("floorToInt done");
 
         stages = new List<Wall>[height];
+        stagesRect = new List<RectInt>[height];
+        stagesArea = new Area[height];
         for (int k = 0; k < height; k++) {
             RemoveSpace(count);
-            BuildArea();
+            BuildArea(k);
             BuildWall(k);
-            Build(k);
         }
 
         // Set a door
@@ -64,26 +69,45 @@ public class Building : MonoBehaviour
             }
         }
 
+        // Set an elevator
+        if (height > 1) {
+            List<Vector2> coords = new List<Vector2>();
+            foreach (RectInt r in stagesRect[stages.Length - 1]) {
+                for (int x = r.xMin; x < r.xMax; x++) {
+                    for (int z = r.yMin; z < r.yMax; z++) {
+                        Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
+                        if (stagesArea[0].Contain(loc, true)) {
+                            coords.Add(loc);
+                        }
+                    }
+                }
+            }
+            elevatorPos = coords[Random.Range(0, coords.Count)];
+        }
+        else {
+            elevatorPos = new Vector2(-1, -1);
+        }
+
+
+        BuildGround();
+        for (int k = 0; k < height; k++) {
+            Build(k);
+        }
+
         Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
     }
 
     // Update is called once per frame
     void Update()
     {
-        DebugSquare();
-        DebugPartition();
+        //DebugSquare();
+        //DebugPartition();
         //foreach (List<Wall> walls in stages) {
         //    foreach (Wall w in walls) {
         //        DebugWall(w);
         //    }
         //}
-        DebugArea();
-    }
-
-    void InitSpace() {
-        RemoveSpace();
-
-        BuildArea();
+        //DebugArea();
     }
 
     void InitWalls() {
@@ -111,7 +135,7 @@ public class Building : MonoBehaviour
         }
          
         // Delete some rectangles on the border
-        for (int k = 0; k < Mathf.Min(count, rects.Count); k++) {
+        for (int k = 0; k < Mathf.Min(count, rects.Count - 1); k++) {
             int idx = Random.Range(0, border.Count);
             RectInt rect = border[idx];
             //Debug.Log(string.Format("Deleting rectangle {0}", rect));
@@ -163,46 +187,53 @@ public class Building : MonoBehaviour
         }
 
         stages[h] = new List<Wall>();
-        for (int i = 0; i < corners.Count - 1; i++) {
-            stages[h].Add(new Wall(corners[i], corners[i + 1]));
+        if (corners.Count > 0) {
+            for (int i = 0; i < corners.Count - 1; i++) {
+                stages[h].Add(new Wall(corners[i], corners[i + 1]));
+            }
+            stages[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
         }
-        stages[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
     }
 
-    void BuildArea() {
+    void BuildArea(int h) {
         // Build the area
         area = new Area();
+        stagesRect[h] = new List<RectInt>();
         //Debug.Log(string.Format("{0} rectangles remaining", rects.Count));
         //for (int i = 0; i < m; i++) {
         for (int i = 0; i < rects.Count; i++) {
             area.Add(rects[i]);
+            stagesRect[h].Add(rects[i]);
         }
+        stagesArea[h] = area;
         //Debug.Log(string.Format("area has {0} points: {1}", area.Main.Count, ListToString<Vector2>(area.Main)));
     }
 
-    void Build(int h) {
-        // Instanciate walls
-        foreach (Wall wall in stages[h]) {
-            Vector3 dir = Vector3.Normalize(wall.end - wall.start);
-            for (int i = 0; i < wall.types.Length; i++) {
-                Vector3 pos = (wall.start + i * dir + wallPrefabDim.x / 2 * dir.normalized) * wallPrefabDim.x;
-                pos.y *= wallPrefabDim.y;
-                Vector3 rot = new Vector3(0, Vector3.SignedAngle(Vector3.right, dir, Vector3.up), 0);
-                var w = Instantiate(wallPrefab);
-                w.transform.localPosition = pos;
-                w.transform.parent = transform;
-                w.transform.Rotate(rot);
-            }
-        }
+    void InstanciateWall(Transform prefab, Wall wall, int i, Vector3 dir) {
+        Vector3 cornerPos = (new Vector3(wall.start.x, 0, wall.start.z) + (i) * dir) * theme.wallDim.x;
+        float height = wall.start.y * theme.wallDim.y + theme.wallDim.y / 2;
+        cornerPos.y = height;
+        Vector3 pos = cornerPos + dir * 0.5f * theme.wallDim.x;
+        pos.y = height;
+        Vector3 rot = Vector3.up * (Vector3.SignedAngle(Vector3.right, dir, Vector3.up) + 90);
+        var c = Instantiate(theme.cornerPrefab);
+        c.transform.localPosition = cornerPos;
+        c.transform.parent = transform;
+        var w = Instantiate(prefab);
+        w.transform.localPosition = pos;
+        w.transform.parent = transform;
+        w.transform.Rotate(rot);
+    }
 
-        // Instanciate roofs
-        foreach (RectInt r in rects) {
+    void BuildGround() {
+        foreach (RectInt r in stagesRect[0]) {
             for (int x = r.xMin; x < r.xMax; x++) {
                 for (int z = r.yMin; z < r.yMax; z++) {
                     Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
-                    Vector3 pos = new Vector3((x + roofPrefabDim.x / 2) * roofPrefabDim.x, wallPrefabDim.y * (h + 1) * roofPrefabDim.y, (z + roofPrefabDim.z / 2) * roofPrefabDim.z);
-                    if (area.Contain(loc, true)) {
-                        var roof = Instantiate(roofPrefab);
+                    Vector3 pos = new Vector3((x + 0.5f) * theme.roofDim.x, -theme.roofDim.y / 2, (z + 0.5f) * theme.roofDim.z);
+                    pos.y += 0.001f; // texture clipping protection
+                    if (stagesArea[0].Contain(loc, true)) {
+                        var roof = Instantiate(theme.roofPrefab);
                         roof.transform.parent = transform;
                         roof.transform.localPosition = pos;
                     }
@@ -211,22 +242,67 @@ public class Building : MonoBehaviour
         }
     }
 
+    void Build(int h) {
+        // Instanciate walls
+        foreach (Wall wall in stages[h]) {
+            Vector3 dir = Vector3.Normalize(wall.end - wall.start);
+            //Debug.Log(wall.start + " to " + wall.end);
+            for (int i = 0; i < wall.types.Length; i++) {
+                switch (wall.types[i]) {
+                    case WallType.Wall:
+                        InstanciateWall(theme.wallPrefab, wall, i, dir);
+                        break;
+                    case WallType.Door:
+                        InstanciateWall(theme.doorPrefab, wall, i, dir);
+                        break;
+                    case WallType.Window:
+                        InstanciateWall(theme.windowPrefab, wall, i, dir);
+                        break;
+                }
+            }
+        }
+
+        // Instanciate roofs
+        foreach (RectInt r in stagesRect[h]) {
+            for (int x = r.xMin; x < r.xMax; x++) {
+                for (int z = r.yMin; z < r.yMax; z++) {
+                    Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
+                    if (loc != elevatorPos || h == height - 1) {
+                        Vector3 pos = new Vector3((x + 0.5f) * theme.roofDim.x, theme.wallDim.y * (h + 1) - theme.roofDim.y / 2, (z + 0.5f) * theme.roofDim.z);
+                        pos.y += 0.001f; // texture clipping protection
+                        if (stagesArea[h].Contain(loc, true)) {
+                            var roof = Instantiate(theme.roofPrefab);
+                            roof.transform.parent = transform;
+                            roof.transform.localPosition = pos;
+                        }
+                    }
+                }
+            }
+        }
+
+        var elevator = Instantiate(theme.elevatorPrefab).transform;
+        elevator.parent = transform;
+        elevator.localPosition = new Vector3(elevatorPos.x * theme.elevatorDim.x, theme.wallDim.y * (h + 1) - theme.elevatorDim.y / 2, elevatorPos.y * theme.elevatorDim.z);
+    }
+
     #region Debug
 
     void DebugWall(Wall wall) {
-        Debug.DrawLine(wall.start, wall.end, Color.blue);
+        Vector3 start = new Vector3(wall.start.x * theme.wallDim.x, wall.start.y * theme.wallDim.y, wall.start.z * theme.wallDim.x);
+        Vector3 end = new Vector3(wall.end.x * theme.wallDim.x, wall.end.y * theme.wallDim.y, wall.end.z * theme.wallDim.x);
+        Debug.DrawLine(start, end, Color.blue);
         for (int i = 0; i < wall.types.Length; i++) {
             if (wall.types[i] == WallType.Door) {
-                Vector3 dir = Vector3.Normalize(wall.end - wall.start);
-                Debug.DrawLine(wall.start + i * dir, wall.start + i * dir + Vector3.up, Color.green);
-                Debug.DrawLine(wall.start + (i+1) * dir, wall.start + (i+1) * dir + Vector3.up, Color.green);
+                Vector3 dir = Vector3.Normalize(wall.end - wall.start) * theme.wallDim.x;
+                Debug.DrawLine(start + i * dir, start + i * dir + Vector3.up * theme.wallDim.y, Color.green);
+                Debug.DrawLine(start + (i+1) * dir, start + (i+1) * dir + Vector3.up * theme.wallDim.y, Color.green);
             }
             if (wall.types[i] == WallType.Window) {
-                Vector3 dir = Vector3.Normalize(wall.end - wall.start);
-                Vector3 v1 = wall.start + i * dir + 0.25f * (dir + Vector3.up);
-                Vector3 v2 = wall.start + (i + 1) * dir + 0.25f * (-dir + Vector3.up);
-                Vector3 v3 = v1 + Vector3.up * 0.5f;
-                Vector3 v4 = v2 + Vector3.up * 0.5f;
+                Vector3 dir = Vector3.Normalize(wall.end - wall.start) * theme.wallDim.x;
+                Vector3 v1 = start + i * dir/* * theme.wallDim.x*/ + 0.25f * (dir + Vector3.up);
+                Vector3 v2 = start + (i + 1) * dir/* * theme.wallDim.x*/ + 0.25f * (-dir + Vector3.up);
+                Vector3 v3 = v1 + Vector3.up * 0.5f * theme.wallDim.y;
+                Vector3 v4 = v2 + Vector3.up * 0.5f * theme.wallDim.y;
                 Debug.DrawLine(v1, v2, Color.green);
                 Debug.DrawLine(v2, v4, Color.green);
                 Debug.DrawLine(v4, v3, Color.green);
@@ -236,32 +312,41 @@ public class Building : MonoBehaviour
     }
 
     void DebugSquare() {
+        Vector3 v1 = new Vector3(0, 0, 0);
+        Vector3 v2 = new Vector3(width * theme.wallDim.x, 0, 0);
+        Vector3 v3 = new Vector3(width, 0, length) * theme.wallDim.x;
+        Vector3 v4 = new Vector3(0, 0, length * theme.wallDim.x);
+        Vector3 v5 = new Vector3(0, height * theme.wallDim.y, 0);
+        Vector3 v6 = new Vector3(width * theme.wallDim.x, height * theme.wallDim.y, 0);
+        Vector3 v7 = new Vector3(width * theme.wallDim.x, height * theme.wallDim.y, length * theme.wallDim.x);
+        Vector3 v8 = new Vector3(0, height * theme.wallDim.y, length * theme.wallDim.x);
+
         // Bottom rectangle
-        Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(width, 0, 0), Color.red);
-        Debug.DrawLine(new Vector3(width, 0, 0), new Vector3(width, 0, length), Color.red);
-        Debug.DrawLine(new Vector3(width, 0, length), new Vector3(0, 0, length), Color.red);
-        Debug.DrawLine(new Vector3(0, 0, length), new Vector3(0, 0, 0), Color.red);
+        Debug.DrawLine(v1, v2, Color.red);
+        Debug.DrawLine(v2, v3, Color.red);
+        Debug.DrawLine(v3, v4, Color.red);
+        Debug.DrawLine(v4, v1, Color.red);
 
         // Top rectangle
-        Debug.DrawLine(new Vector3(0, height, 0), new Vector3(width, height, 0), Color.red);
-        Debug.DrawLine(new Vector3(width, height, 0), new Vector3(width, height, length), Color.red);
-        Debug.DrawLine(new Vector3(width, height, length), new Vector3(0, height, length), Color.red);
-        Debug.DrawLine(new Vector3(0, height, length), new Vector3(0, height, 0), Color.red);
+        Debug.DrawLine(v5, v6, Color.red);
+        Debug.DrawLine(v6, v7, Color.red);
+        Debug.DrawLine(v7, v8, Color.red);
+        Debug.DrawLine(v8, v5, Color.red);
 
         // Vertical lines
-        Debug.DrawLine(new Vector3(0, 0, 0), new Vector3(0, height, 0), Color.red);
-        Debug.DrawLine(new Vector3(width, 0, 0), new Vector3(width, height, 0), Color.red);
-        Debug.DrawLine(new Vector3(width, 0, length), new Vector3(width, height, length), Color.red);
-        Debug.DrawLine(new Vector3(0, 0, length), new Vector3(0, height, length), Color.red);
+        Debug.DrawLine(v1, v5, Color.red);
+        Debug.DrawLine(v2, v6, Color.red);
+        Debug.DrawLine(v3, v7, Color.red);
+        Debug.DrawLine(v4, v8, Color.red);
     }
 
     void DebugPartition() {
         //Debug.Log(rects);
         foreach (RectInt r in rects) {
-            Vector3 v1 = new Vector3(r.xMin, 0, r.yMin);
-            Vector3 v2 = new Vector3(r.xMin, 0, r.yMax);
-            Vector3 v3 = new Vector3(r.xMax, 0, r.yMax);
-            Vector3 v4 = new Vector3(r.xMax, 0, r.yMin);
+            Vector3 v1 = new Vector3(r.xMin, 0, r.yMin) * theme.wallDim.x;
+            Vector3 v2 = new Vector3(r.xMin, 0, r.yMax) * theme.wallDim.x;
+            Vector3 v3 = new Vector3(r.xMax, 0, r.yMax) * theme.wallDim.x;
+            Vector3 v4 = new Vector3(r.xMax, 0, r.yMin) * theme.wallDim.x;
             Debug.DrawLine(v1, v2, Color.yellow);
             Debug.DrawLine(v2, v3, Color.yellow);
             Debug.DrawLine(v3, v4, Color.yellow);
@@ -273,10 +358,10 @@ public class Building : MonoBehaviour
 
         if (m < rects.Count) {
             RectInt r = rects[m];
-            Vector3 v1 = new Vector3(r.xMin, 0, r.yMin);
-            Vector3 v2 = new Vector3(r.xMin, 0, r.yMax);
-            Vector3 v3 = new Vector3(r.xMax, 0, r.yMax);
-            Vector3 v4 = new Vector3(r.xMax, 0, r.yMin);
+            Vector3 v1 = new Vector3(r.xMin, 0, r.yMin) * theme.wallDim.x;
+            Vector3 v2 = new Vector3(r.xMin, 0, r.yMax) * theme.wallDim.x;
+            Vector3 v3 = new Vector3(r.xMax, 0, r.yMax) * theme.wallDim.x;
+            Vector3 v4 = new Vector3(r.xMax, 0, r.yMin) * theme.wallDim.x;
             Debug.DrawLine(v1, v2, Color.green);
             Debug.DrawLine(v2, v3, Color.green);
             Debug.DrawLine(v3, v4, Color.green);
@@ -290,13 +375,13 @@ public class Building : MonoBehaviour
         foreach (List<Vector2> points in area.Surfaces) {
             //List<Vector2> points = area.Main;
             for (int i = 0; i < points.Count - 1; i++) {
-                Vector3 p1 = new Vector3(points[i].x, 0, points[i].y);
-                Vector3 p2 = new Vector3(points[i + 1].x, 0, points[i + 1].y);
+                Vector3 p1 = new Vector3(points[i].x, 0, points[i].y) * theme.wallDim.x;
+                Vector3 p2 = new Vector3(points[i + 1].x, 0, points[i + 1].y) * theme.wallDim.x;
                 Debug.DrawLine(p1, p2, Color.magenta);
                 Debug.DrawLine(p1, p1 + Vector3.up * 0.5f, Color.magenta);
             }
-            Debug.DrawLine(new Vector3(points[points.Count - 1].x, 0, points[points.Count - 1].y), new Vector3(points[0].x, 0, points[0].y), Color.magenta);
-            Debug.DrawLine(new Vector3(points[points.Count - 1].x, 0, points[points.Count - 1].y), new Vector3(points[points.Count - 1].x, 0.5f, points[points.Count - 1].y), Color.magenta);
+            Debug.DrawLine(new Vector3(points[points.Count - 1].x, 0, points[points.Count - 1].y) * theme.wallDim.x, new Vector3(points[0].x, 0, points[0].y) * theme.wallDim.x, Color.magenta);
+            Debug.DrawLine(new Vector3(points[points.Count - 1].x, 0, points[points.Count - 1].y) * theme.wallDim.x, new Vector3(points[points.Count - 1].x, 0.5f, points[points.Count - 1].y) * theme.wallDim.x, Color.magenta);
         }
     }
 
