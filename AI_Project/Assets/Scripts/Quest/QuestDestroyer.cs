@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class QuestDestroyer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public string key;
+    public int n;
+    QuestManager tmp;
+
+    public void OnDestroy()
     {
-        
+        GameObject qm = GameObject.Find("QuestManager");
+        if (qm != null)
+        {
+            tmp = qm.GetComponent<QuestManager>();
+        }
+        if(tmp != null)
+            tmp.FinishQuest(key, n);
     }
 }

@@ -5,8 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class Quest 
 {
-    public int id;
+
     public string questName;
+    public int id;
     public string questDescription;
     public int levelOder;
     public int maxOrder;
@@ -14,6 +15,15 @@ public class Quest
     public List<int> next;
     public bool finish;
 
+    public bool isKeyActive(string key)
+    {
+        for (int i = 0; i < missions.Count; i++)
+        {
+            if (string.Equals(missions[i].missionKey, key) && missions[i].order <= levelOder)
+                return true;
+        }
+        return false;
+    }
 
     public void FinishMission(string key, int n)
     {
@@ -44,9 +54,16 @@ public class Quest
         if(levelOder > maxOrder)
         {
             finish = true;
+            GameObject.Find("Canvas").GetComponent<ShowEvent>().ShowInfo("Quest : " + questName + " END", 5);
+            if(next.Count > 0)
+                GameObject.Find("Canvas").GetComponent<ShowEvent>().ShowInfo("New Quest are avaible !!\n Press J to consult them.", 5);
         }
     }
 
+    public void Add()
+    {
+        missions[0].AddKey(1);
+    }
 
 }
 
@@ -56,7 +73,7 @@ public enum Objectif
 }
 
 [System.Serializable]
-public struct Mission
+public class Mission
 {
     public string missionName;
     public string missionDescription;
@@ -70,9 +87,12 @@ public struct Mission
     public void AddKey(int n)
     {
         current += n;
-        if(current >= max)
+        if (current >= max)
         {
             finish = true;
+            GameObject.Find("Canvas").GetComponent<ShowEvent>().ShowInfo("Objectif : " + missionName + " END", 5);
+            return;
         }
+        GameObject.Find("Canvas").GetComponent<ShowEvent>().ShowInfo("Objectif : " + missionName + " UPDATE : " + current +"/"+max, 5);
     }
 }

@@ -36,4 +36,9 @@ public class DragPanel : EventTrigger
     {
         dragging = false;
     }
+
+    public void OnDisable()
+    {
+        dragging = false;
+    }
 }

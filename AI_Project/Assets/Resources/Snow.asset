@@ -19,4 +19,10 @@ MonoBehaviour:
   seed: 3
   chunks: 3
   highCoeff: 3
-  regions: []
+  regions:
+  - name: 
+    height: 0
+    colour: {r: 0, g: 0, b: 0, a: 0}
+  - name: 
+    height: 0.5
+    colour: {r: 1, g: 1, b: 1, a: 0}

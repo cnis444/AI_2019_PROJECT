@@ -9,16 +9,35 @@ public class QuestManager : MonoBehaviour
     public List<Quest> questsInactive;
     public List<Quest> questsFinish;
 
+    public void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+
+
+    public bool isKeyActive(string key)
+    {
+        for (int i = 0; i < questsActive.Count; i++)
+        {
+            Quest tmpQuest = questsActive[i];
+            if (tmpQuest.isKeyActive(key))
+                return true;
+        }
+
+        return false;
     }
 
     public void FinishQuest(string key, int n)
@@ -38,7 +57,9 @@ public class QuestManager : MonoBehaviour
         if(questsActive.Count == 0)
         {
             //TODO VICTORY
+            GameObject.Find("Canvas").GetComponent<ShowEvent>().ShowInfo("\t!!! VICTORY !!!", 20);
         }
+
     }
 
     public List<Quest> GetNextQuest(List<int> ids)
