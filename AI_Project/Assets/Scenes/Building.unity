@@ -427,11 +427,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Building
       objectReference: {fileID: 0}
-    - target: {fileID: 8089832899000454034, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8089832899000454032, guid: b4be5fe9939f9a94c8594c86e1e9a423,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -486,42 +481,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: rectangleToRemove
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: volumeReduction
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: m
-      value: 47
-      objectReference: {fileID: 0}
-    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: height
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: theme
-      value: 
-      objectReference: {fileID: 11400000, guid: 83703c77ad3bfda4bbf8d56e93626258,
-        type: 2}
-    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: width
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: length
-      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4be5fe9939f9a94c8594c86e1e9a423, type: 3}
