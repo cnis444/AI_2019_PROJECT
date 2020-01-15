@@ -16,9 +16,9 @@ public class Building : MonoBehaviour
     public float volumeReduction;
     private int m = 0;
 
-    List<Wall>[] stages;
-    List<RectInt>[] stagesRect;
-    Area[] stagesArea;
+    List<Wall>[] floors;
+    List<RectInt>[] floorsRect;
+    Area[] floorsArea;
     SpacePartition partition;
     List<RectInt> rects;
     Area area;
@@ -50,9 +50,9 @@ public class Building : MonoBehaviour
         //rectangleToRemove = Mathf.FloorToInt(rects.Count * volumeReduction);
         //Debug.Log("floorToInt done");
 
-        stages = new List<Wall>[height];
-        stagesRect = new List<RectInt>[height];
-        stagesArea = new Area[height];
+        floors = new List<Wall>[height];
+        floorsRect = new List<RectInt>[height];
+        floorsArea = new Area[height];
         for (int k = 0; k < height; k++) {
             RemoveSpace(count);
             BuildArea(k);
@@ -60,10 +60,10 @@ public class Building : MonoBehaviour
         }
 
         // Set a door
-        stages[0][Random.Range(0, stages[0].Count)].AddDoor();
+        floors[0][Random.Range(0, floors[0].Count)].AddDoor();
 
         // Add windows
-        foreach (List<Wall> walls in stages) {
+        foreach (List<Wall> walls in floors) {
             foreach (Wall w in walls) {
                 w.AddWindows(windowProbability);
             }
@@ -72,11 +72,11 @@ public class Building : MonoBehaviour
         // Set an elevator
         if (height > 1) {
             List<Vector2> coords = new List<Vector2>();
-            foreach (RectInt r in stagesRect[stages.Length - 1]) {
+            foreach (RectInt r in floorsRect[floors.Length - 1]) {
                 for (int x = r.xMin; x < r.xMax; x++) {
                     for (int z = r.yMin; z < r.yMax; z++) {
                         Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
-                        if (stagesArea[0].Contain(loc, true)) {
+                        if (floorsArea[0].Contain(loc, true)) {
                             coords.Add(loc);
                         }
                     }
@@ -93,6 +93,7 @@ public class Building : MonoBehaviour
         for (int k = 0; k < height; k++) {
             Build(k);
         }
+        InstanciateElevator();
 
         Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
     }
@@ -111,7 +112,7 @@ public class Building : MonoBehaviour
     }
 
     void InitWalls() {
-        stages = new List<Wall>[height];
+        floors = new List<Wall>[height];
         for (int k = 0; k < height; k++) {
             BuildWall(k);
         }
@@ -186,27 +187,27 @@ public class Building : MonoBehaviour
             corners.Add(new Vector3(area.Main[i].x, h, area.Main[i].y));
         }
 
-        stages[h] = new List<Wall>();
+        floors[h] = new List<Wall>();
         if (corners.Count > 0) {
             for (int i = 0; i < corners.Count - 1; i++) {
-                stages[h].Add(new Wall(corners[i], corners[i + 1]));
+                floors[h].Add(new Wall(corners[i], corners[i + 1]));
             }
-            stages[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
+            floors[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
         }
-        Debug.Log(ListToString(stages[h]));
+        Debug.Log(ListToString(floors[h]));
     }
 
     void BuildArea(int h) {
         // Build the area
         area = new Area();
-        stagesRect[h] = new List<RectInt>();
+        floorsRect[h] = new List<RectInt>();
         //Debug.Log(string.Format("{0} rectangles remaining", rects.Count));
         //for (int i = 0; i < m; i++) {
         for (int i = 0; i < rects.Count; i++) {
             area.Add(rects[i]);
-            stagesRect[h].Add(rects[i]);
+            floorsRect[h].Add(rects[i]);
         }
-        stagesArea[h] = area;
+        floorsArea[h] = area;
         //Debug.Log(string.Format("area has {0} points: {1}", area.Main.Count, ListToString<Vector2>(area.Main)));
     }
 
@@ -227,13 +228,13 @@ public class Building : MonoBehaviour
     }
 
     void BuildGround() {
-        foreach (RectInt r in stagesRect[0]) {
+        foreach (RectInt r in floorsRect[0]) {
             for (int x = r.xMin; x < r.xMax; x++) {
                 for (int z = r.yMin; z < r.yMax; z++) {
                     Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
                     Vector3 pos = new Vector3((x + 0.5f) * theme.roofDim.x, -theme.roofDim.y / 2, (z + 0.5f) * theme.roofDim.z);
                     pos.y += 0.001f; // texture clipping protection
-                    if (stagesArea[0].Contain(loc, true)) {
+                    if (floorsArea[0].Contain(loc, true)) {
                         var roof = Instantiate(theme.roofPrefab);
                         roof.transform.parent = transform;
                         roof.transform.localPosition = pos;
@@ -245,7 +246,7 @@ public class Building : MonoBehaviour
 
     void Build(int h) {
         // Instanciate walls
-        foreach (Wall wall in stages[h]) {
+        foreach (Wall wall in floors[h]) {
             Vector3 dir = Vector3.Normalize(wall.end - wall.start);
             //Debug.Log(wall.start + " to " + wall.end);
             for (int i = 0; i < wall.types.Length; i++) {
@@ -264,14 +265,14 @@ public class Building : MonoBehaviour
         }
 
         // Instanciate roofs
-        foreach (RectInt r in stagesRect[h]) {
+        foreach (RectInt r in floorsRect[h]) {
             for (int x = r.xMin; x < r.xMax; x++) {
                 for (int z = r.yMin; z < r.yMax; z++) {
                     Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
                     if (loc != elevatorPos || h == height - 1) {
                         Vector3 pos = new Vector3((x + 0.5f) * theme.roofDim.x, theme.wallDim.y * (h + 1) - theme.roofDim.y / 2, (z + 0.5f) * theme.roofDim.z);
                         pos.y += 0.001f; // texture clipping protection
-                        if (stagesArea[h].Contain(loc, true)) {
+                        if (floorsArea[h].Contain(loc, true)) {
                             var roof = Instantiate(theme.roofPrefab);
                             roof.transform.parent = transform;
                             roof.transform.localPosition = pos;
@@ -281,9 +282,18 @@ public class Building : MonoBehaviour
             }
         }
 
-        var elevator = Instantiate(theme.elevatorPrefab).transform;
-        elevator.parent = transform;
-        elevator.localPosition = new Vector3(elevatorPos.x * theme.elevatorDim.x, theme.wallDim.y * (h + 1) - theme.elevatorDim.y / 2, elevatorPos.y * theme.elevatorDim.z);
+        //var elevator = Instantiate(theme.elevatorPrefab).transform;
+        //elevator.parent = transform;
+        //elevator.localPosition = new Vector3(elevatorPos.x * theme.elevatorDim.x, theme.wallDim.y * (h + 1) - theme.elevatorDim.y / 2, elevatorPos.y * theme.elevatorDim.z);
+    }
+
+    void InstanciateElevator() {
+        var e = Instantiate(theme.elevatorPrefab).transform;
+        e.parent = transform;
+        e.localPosition = new Vector3(elevatorPos.x, 0, elevatorPos.y) * theme.wallDim.x;
+        Elevator elevator = e.GetComponent<Elevator>();
+        elevator.floorCount = height;
+        elevator.floorHeight = theme.wallDim.y;
     }
 
     #region Debug

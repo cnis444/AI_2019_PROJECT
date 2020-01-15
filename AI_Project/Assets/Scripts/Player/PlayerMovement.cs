@@ -31,12 +31,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void Move() {
-        if (isClimbing && !Input.GetButtonDown("Jump")) {
+        if (isClimbing) {
             Climb();
         }
         else {
-            isClimbing = false;
-
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
 
@@ -54,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // Jump
-            if (Input.GetButtonDown("Jump") && controller.isGrounded) {
+            if (Input.GetButton("Jump") && controller.isGrounded) {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
             }
 
@@ -69,7 +67,16 @@ public class PlayerMovement : MonoBehaviour
     public void Climb() {
         float y = Input.GetAxis("Vertical");
         Vector3 move = transform.up * y;
-        controller.Move(move * walkSpeed * Time.deltaTime);
+        move *= walkSpeed;
+
+        // Jump
+        if (Input.GetButton("Jump")) {
+            velocity.y = Mathf.Sqrt(jumpHeight * -1 * gravity);
+            isClimbing = false;
+            controller.Move(velocity * Time.deltaTime);
+        }
+
+        controller.Move(move * Time.deltaTime);
     }
 
     public void CheckInteraction() {
@@ -77,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(forward, out hit, maxInteractionDistance) && Input.GetKeyDown(KeyCode.E)) {
             try {
-                hit.collider.GetComponent<Elevator>().DoSomething();
+                hit.collider.GetComponent<InteractiveObject>().DoSomething();
             }
             catch {}
         }

@@ -22,7 +22,7 @@ MonoBehaviour:
     type: 3}
   roofPrefab: {fileID: 2240363685960991144, guid: 4fb80cdbee78f3349b948911443d8979,
     type: 3}
-  elevatorPrefab: {fileID: 4618659792517080884, guid: ffd9d406d4ed71d4986248b995af4a17,
+  elevatorPrefab: {fileID: 6798688478360104477, guid: e9b308a149caa2f4984f108da389f11d,
     type: 3}
   wallDim: {x: 2, y: 2.5, z: 0.1}
   cornerDim: {x: 0.1, y: 2.5, z: 0.1}
