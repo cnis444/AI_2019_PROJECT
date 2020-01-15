@@ -36,4 +36,8 @@ public class Wall
             }
         }
     }
+
+    public override string ToString() {
+        return string.Format("[{0}, {1} ({2})]", start, end, types.Length);
+    }
 }

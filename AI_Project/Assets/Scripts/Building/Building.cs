@@ -193,6 +193,7 @@ public class Building : MonoBehaviour
             }
             stages[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
         }
+        Debug.Log(ListToString(stages[h]));
     }
 
     void BuildArea(int h) {
@@ -217,11 +218,11 @@ public class Building : MonoBehaviour
         pos.y = height;
         Vector3 rot = Vector3.up * (Vector3.SignedAngle(Vector3.right, dir, Vector3.up) + 90);
         var c = Instantiate(theme.cornerPrefab);
-        c.transform.localPosition = cornerPos;
         c.transform.parent = transform;
+        c.transform.localPosition = cornerPos;
         var w = Instantiate(prefab);
-        w.transform.localPosition = pos;
         w.transform.parent = transform;
+        w.transform.localPosition = pos;
         w.transform.Rotate(rot);
     }
 
