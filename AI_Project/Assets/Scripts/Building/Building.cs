@@ -194,7 +194,7 @@ public class Building : MonoBehaviour
             }
             floors[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
         }
-        Debug.Log(ListToString(floors[h]));
+        //Debug.Log(ListToString(floors[h]));
     }
 
     void BuildArea(int h) {
