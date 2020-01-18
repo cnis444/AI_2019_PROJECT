@@ -255,7 +255,7 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 7
   gravity: -19.62
-  jumpHeight: 2
+  jumpHeight: 1.5
   isClimbing: 0
   maxInteractionDistance: 1
 --- !u!1 &7556097003781313438
