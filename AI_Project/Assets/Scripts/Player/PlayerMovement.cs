@@ -82,11 +82,14 @@ public class PlayerMovement : MonoBehaviour
     public void CheckInteraction() {
         Ray forward = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(forward, out hit, maxInteractionDistance) && Input.GetKeyDown(KeyCode.E)) {
-            try {
-                hit.collider.GetComponent<InteractiveObject>().DoSomething();
+        if (Physics.Raycast(forward, out hit, maxInteractionDistance)) {
+            InteractiveObject o = hit.collider.gameObject.GetComponent<InteractiveObject>();
+            if (o != null) {
+                o.highlighted = true;
+                if (Input.GetKeyDown(KeyCode.E)) {
+                    o.DoSomething();
+                }
             }
-            catch {}
         }
     }
 }
