@@ -9,61 +9,117 @@ public class ButtonMenu : MonoBehaviour
 {
     //pass data to generate map
     private GameObject setUp;
-    private DatasMapFile mapFiles;
-    public List<MapParam> defaultMap;
+    private DatasFiles dataFiles;
 
-    //all the panels
-    public List<GameObject> panels = new List<GameObject>();
+    [Header("Special Panel")]
     public GameObject toolTipPanel;
     public GameObject alertPanel;
+    public GameObject pipelinePanel;
 
-    //to select the map
+    [Header("dropdown")]
     public Dropdown mapChoice;
-    private List<MapParam> mapParams = new List<MapParam>();
+    public Dropdown buldingChoice;
+    public Dropdown itemChoice;
+    public Dropdown NPCChoice;
+    public Dropdown NPCAIChoice;
+    public Dropdown questChoice;
+   
+    [Header("Selected data")]
     public MapParam selectedMap;//the map param that will be pass
-    private bool customMap = false;//use the custom param
+    public SetOfBulding selectedBulding;
+    public SetOfItem selectedItem;
+    public SetOfNPC selectedNPC;
+    public SetOfQuest selectedQuest;
+
+    [Header("Prefab")]
+    public GameObject terrainTypeUIPrefab;
+    public GameObject NPCBtnPrefab;
 
     private GameObject customColorHolder;
     private GameObject colorPreview;
     public TerrainType nexTerrainType;//the next region
+    public NPCParam nextNPC;
 
-    //Prefab
-    public GameObject terrainTypeUIPrefab;
+    [Header("default list data")]
+    public List<MapParam> defaultMap;
+    public List<SetOfBulding> defaultSetBulding = new List<SetOfBulding>();
+    public List<SetOfItem> defaultSetItem = new List<SetOfItem>();
+    public List<SetOfNPC> defaultSetNPC = new List<SetOfNPC>();
+    public List<SetOfQuest> defaultSetQuest = new List<SetOfQuest>();
+
+    [Header("list panels")]
+    public List<RuntimeAnimatorController> defaultNPCAI;
+    public List<GameObject> panels = new List<GameObject>();
+    private List<MapParam> mapParams = new List<MapParam>();
+    private List<SetOfBulding> buldingParams = new List<SetOfBulding>();
+    private List<SetOfItem> itemsParams = new List<SetOfItem>();
+    private List<SetOfNPC> NPCParams = new List<SetOfNPC>();
+    private List<SetOfQuest> questParams = new List<SetOfQuest>();    
 
     public void Awake()
     {
-        string filePath = Path.Combine(Application.persistentDataPath, "mapDatas.json");
+        string filePath = Path.Combine(Application.persistentDataPath, "datasFile.json");
         if (!File.Exists(filePath))
         {
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Maps"));
-            Debug.Log("first");
-            Debug.Log(filePath);
-            mapFiles.datas = new List<string>();
-            mapFiles.datas.Add("Island");
-            mapFiles.datas.Add("Messa");
-            mapFiles.datas.Add("Snow");
-            Debug.Log(mapFiles.datas.Count);
-            string save = JsonUtility.ToJson(mapFiles);
-            Debug.Log(save);
-            File.WriteAllText(filePath, save);
-            #if UNITY_EDITOR
-                UnityEditor.AssetDatabase.Refresh();        
-            #endif
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Buldings"));
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Items"));
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "NPCs"));
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Quests"));
+            dataFiles.mapDatas = new List<string>();
+            dataFiles.buldingDatas = new List<string>();
+            dataFiles.itemDatas = new List<string>();
+            dataFiles.NPCDatas = new List<string>();
+            dataFiles.scenarioDatas = new List<string>();
 
             foreach (MapParam item in defaultMap)
             {
-                string mapFile = Path.Combine(Application.persistentDataPath,"Maps", item.mapName + ".json");
+                string mapFile = Path.Combine(Application.persistentDataPath, "Maps", item.mapName + ".json");
                 string mapJSON = JsonUtility.ToJson(item);
                 File.WriteAllText(mapFile, mapJSON);
+                dataFiles.mapDatas.Add(item.mapName);
             }
+            foreach (SetOfBulding item in defaultSetBulding)
+            {
+                string file = Path.Combine(Application.persistentDataPath, "Buldings", item.setName + ".json");
+                string json = JsonUtility.ToJson(item);
+                File.WriteAllText(file, json);
+                dataFiles.buldingDatas.Add(item.setName);
+            }
+            foreach (SetOfItem item in defaultSetItem)
+            {
+                string file = Path.Combine(Application.persistentDataPath, "Items", item.setName + ".json");
+                string json = JsonUtility.ToJson(item);
+                File.WriteAllText(file, json);
+                dataFiles.itemDatas.Add(item.setName);
+            }
+            foreach (SetOfNPC item in defaultSetNPC)
+            {
+                
+                string file = Path.Combine(Application.persistentDataPath, "NPCs", item.setName + ".json");
+                string json = JsonUtility.ToJson(item);
+                File.WriteAllText(file, json);
+                dataFiles.NPCDatas.Add(item.setName);
+            }
+            foreach (SetOfQuest item in defaultSetQuest)
+            {
+                string file = Path.Combine(Application.persistentDataPath, "Quests", item.setName + ".json");
+                string json = JsonUtility.ToJson(item);
+                File.WriteAllText(file, json);
+                dataFiles.scenarioDatas.Add(item.setName);
+            }
+
+            string saveDataFiles = JsonUtility.ToJson(dataFiles);
+            File.WriteAllText(filePath, saveDataFiles);
+            #if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+            #endif
 
         }
         else
         {
-            Debug.Log("not first");
             string dataAsJson = File.ReadAllText(filePath);
-            mapFiles = JsonUtility.FromJson<DatasMapFile>(dataAsJson);
-            Debug.Log(mapFiles.datas.Count);
+            dataFiles = JsonUtility.FromJson<DatasFiles>(dataAsJson);
         }
     }
 
@@ -73,14 +129,8 @@ public class ButtonMenu : MonoBehaviour
     {
         setUp = GameObject.Find("SetUp");
         ActiveOnePanel(panels[0]);
+        ActivePipelinePanel(false);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ActiveOnePanel(GameObject panel)
     {
         foreach (GameObject p in panels)
@@ -89,13 +139,15 @@ public class ButtonMenu : MonoBehaviour
         }
     }
 
+    #region DropDownBtn
+
     public void SetMapChoice()
     {
         mapChoice.ClearOptions();
         mapParams.Clear();
-        foreach (string map in mapFiles.datas)
+        foreach (string map in dataFiles.mapDatas)
         {
-            string filePath = Path.Combine(Application.persistentDataPath,"Maps", map);
+            string filePath = Path.Combine(Application.persistentDataPath, "Maps", map);
             if (!File.Exists(filePath))
             {
                 string dataAsJson = File.ReadAllText(filePath+".json");
@@ -104,7 +156,113 @@ public class ButtonMenu : MonoBehaviour
                 mapParams.Add(tmp);
             }
         }
-        mapChoice.AddOptions(mapFiles.datas);
+        mapChoice.AddOptions(dataFiles.mapDatas);
+    }
+
+    public void SetDropDownMap(int n)
+    {
+        selectedMap = mapParams[n];
+    }
+
+    public void SetBuldingChoice()
+    {
+        buldingChoice.ClearOptions();
+        buldingParams.Clear();
+        foreach (string bul in dataFiles.buldingDatas)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, "Buldings", bul);
+            if (!File.Exists(filePath))
+            {
+                string dataAsJson = File.ReadAllText(filePath + ".json");
+                SetOfBulding tmp = new SetOfBulding();
+                JsonUtility.FromJsonOverwrite(dataAsJson, tmp);
+                buldingParams.Add(tmp);
+            }
+        }
+        buldingChoice.AddOptions(dataFiles.buldingDatas);
+    }
+
+    public void SetDropDownBulding(int n)
+    {
+        Debug.Log("ici");
+        selectedBulding = buldingParams[n];
+    }
+
+    public void SetItemChoice()
+    {
+        itemChoice.ClearOptions();
+        itemsParams.Clear();
+        foreach (string bul in dataFiles.itemDatas)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, "Items", bul);
+            if (!File.Exists(filePath))
+            {
+                string dataAsJson = File.ReadAllText(filePath + ".json");
+                SetOfItem tmp = new SetOfItem();
+                JsonUtility.FromJsonOverwrite(dataAsJson, tmp);
+                itemsParams.Add(tmp);
+            }
+        }
+        itemChoice.AddOptions(dataFiles.itemDatas);
+    }
+
+    public void SetDropDownItem(int n)
+    {
+        selectedItem = itemsParams[n];
+    }
+
+    public void SetNPCChoice()
+    {
+        NPCChoice.ClearOptions();
+        NPCParams.Clear();
+        Debug.Log(dataFiles.NPCDatas);
+        foreach (string bul in dataFiles.NPCDatas)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, "NPCs", bul);
+            if (!File.Exists(filePath))
+            {
+                string dataAsJson = File.ReadAllText(filePath + ".json");
+                SetOfNPC tmp = new SetOfNPC();
+                JsonUtility.FromJsonOverwrite(dataAsJson, tmp);
+                NPCParams.Add(tmp);
+            }
+        }
+        NPCChoice.AddOptions(dataFiles.NPCDatas);
+    }
+
+    public void SetDropDownNPC(int n)
+    {
+        selectedNPC = NPCParams[n];
+    }
+
+    public void SetQuestsChoice()
+    {
+        questChoice.ClearOptions();
+        questParams.Clear();
+        foreach (string q in dataFiles.scenarioDatas)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, "Quests", q);
+            if (!File.Exists(filePath))
+            {
+                string dataAsJson = File.ReadAllText(filePath + ".json");
+                SetOfQuest tmp = new SetOfQuest();
+                JsonUtility.FromJsonOverwrite(dataAsJson, tmp);
+                questParams.Add(tmp);
+            }
+        }
+        questChoice.AddOptions(dataFiles.scenarioDatas);
+    }
+
+    public void SetDropDownQuest(int n)
+    {
+        selectedQuest = questParams[n];
+    }
+
+    #endregion
+
+    public void ActivePipelinePanel(bool b)
+    {
+        pipelinePanel.SetActive(b);
     }
 
     public void ActiveToolTip(bool b)
@@ -134,13 +292,6 @@ public class ButtonMenu : MonoBehaviour
     }
 
     #endregion
-
-    #region EDIT BUTTON
-
-    public void SetDropDownMap(int n)
-    {
-        selectedMap = mapParams[n];
-    }
 
     #region CUSTOM MAP
 
@@ -308,19 +459,17 @@ public class ButtonMenu : MonoBehaviour
             alertPanel.GetComponentInChildren<Text>().text = alertMsg;
             Button b = alertPanel.GetComponentInChildren<Button>();
             b.onClick.RemoveAllListeners();
-            b.onClick.AddListener(() => ActiveOnePanel(panels[3]));
+            b.onClick.AddListener(() => ActiveOnePanel(panels[2]));
         }
         else
         {
-            customMap = true;
-            ActiveOnePanel(panels[2]);
+            ActiveOnePanel(panels[7]);
             string save = JsonUtility.ToJson(selectedMap);
             string path = Path.Combine(Application.persistentDataPath, "Maps",selectedMap.name + ".json");
-            Debug.Log(path);
             File.WriteAllText(path, save);
 
-            mapFiles.datas.Add(selectedMap.mapName);
-            File.WriteAllText(Path.Combine(Application.persistentDataPath, "mapDatas.json"), JsonUtility.ToJson(mapFiles));
+            dataFiles.mapDatas.Add(selectedMap.mapName);
+            File.WriteAllText(Path.Combine(Application.persistentDataPath, "datasFile.json"), JsonUtility.ToJson(dataFiles));
             #if UNITY_EDITOR
             UnityEditor.AssetDatabase.Refresh();
             #endif
@@ -439,7 +588,7 @@ public class ButtonMenu : MonoBehaviour
             alertPanel.GetComponentInChildren<Text>().text = alertMsg;
             Button b = alertPanel.GetComponentInChildren<Button>();
             b.onClick.RemoveAllListeners();
-            b.onClick.AddListener(() => ActiveOnePanel(panels[4]));
+            b.onClick.AddListener(() => ActiveOnePanel(panels[3]));
         }
         else
         {
@@ -463,9 +612,173 @@ public class ButtonMenu : MonoBehaviour
 
     #endregion
 
+    #region CUSTOM NPC
 
+    public void CustomNPCButton()
+    {
+        selectedNPC = new SetOfNPC();
+        selectedNPC.setName = "";
+        selectedNPC.NPCs = new List<NPCParam>();
+        nextNPC = new NPCParam();
+        NPCAIChoice.ClearOptions();
+        List<string> tmp = new List<string>();
+        foreach (RuntimeAnimatorController item in defaultNPCAI)
+        {
+            tmp.Add(item.name);
+        }
+        NPCAIChoice.AddOptions(tmp);
+        GameObject tmpGO = GameObject.Find("AllNPCAIHolder");
+        for (int a = tmpGO.transform.childCount-1; a>=0; a--)
+        {
+            Destroy(tmpGO.transform.GetChild(a));
+        }
+    }
 
-    #endregion
+    public void SetSetNameNPC(string s)
+    {
+        selectedNPC.setName = s;
+    }
+
+    public void NameNPC(string s)
+    {
+        if (nextNPC == null)
+            nextNPC = new NPCParam();
+        nextNPC.NPCName = s;
+    }
+
+    public void NumberNPC(string s)
+    {
+        if (nextNPC == null)
+            nextNPC = new NPCParam();
+
+        int n = -1;
+        try
+        {
+            n = int.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (System.Exception)
+        {
+            n = -1;
+        }
+
+        nextNPC.numberOf = n;
+    }
+
+    public void DifficultyNPC(float n)
+    {
+        if (nextNPC == null)
+            nextNPC = new NPCParam();
+        nextNPC.difficulty = Mathf.RoundToInt(n);
+        GameObject.Find("TextDifficultyNPCSlider").GetComponent<Text>().text = n.ToString();
+    }
+
+    public void SetDropDownNPCAI(int n)
+    {
+        nextNPC.behaviorGraph = defaultNPCAI[n];
+    }
+
+    public void AddNPC(GameObject content)
+    {
+        bool error = false;
+        string alertMsg = "Incomplete selection : ";
+
+        if (nextNPC.NPCName.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t name invalid";
+        }
+
+        if (nextNPC.numberOf <= 1)
+        {
+            error = true;
+            alertMsg += "\n\t NPC number";
+        }
+
+        if (nextNPC.difficulty <= 0 || nextNPC.difficulty > 6)
+        {
+            error = true;
+            alertMsg += "\n\t NPC difficulty";
+        }
+
+        if (nextNPC.behaviorGraph == null)
+        {
+            error = true;
+            alertMsg += "\n\t NPC AI";
+        }
+
+        if (error)
+        {
+            alertPanel.SetActive(true);
+            alertPanel.GetComponentInChildren<Text>().text = alertMsg;
+            Button b = alertPanel.GetComponentInChildren<Button>();
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(() => ActiveOnePanel(panels[6]));
+        }
+        else
+        {
+            selectedNPC.NPCs.Add(nextNPC);
+            GameObject tmpPrefab = Instantiate(NPCBtnPrefab);
+            tmpPrefab.transform.SetParent(content.transform);
+            tmpPrefab.GetComponent<Button>().onClick.RemoveAllListeners();
+            tmpPrefab.GetComponent<Button>().onClick.AddListener(() => showNPCDesc(nextNPC));
+            tmpPrefab.GetComponentInChildren<Text>().text = nextNPC.NPCName;
+        }
+    }
+
+    public void showNPCDesc(NPCParam nPC)
+    {
+        GameObject.Find("NameNPCDesc").GetComponent<Text>().text = nPC.NPCName;
+        GameObject.Find("numNPCDesc").GetComponent<Text>().text = nPC.numberOf.ToString();
+        GameObject.Find("diffNPCDesc").GetComponent<Text>().text = nPC.difficulty.ToString();
+        GameObject.Find("AiNPCDesc").GetComponent<Text>().text = nPC.behaviorGraph.name;
+    }
+
+    public void AcceptCustomNPC()
+    {
+        bool error = false;
+        string alertMsg = "Incomplete selection : ";
+
+        if (selectedNPC.setName.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t name invalid";
+        }
+
+        if (selectedNPC.NPCs.Count <= 0)
+        {
+            error = true;
+            alertMsg += "\n\t List NPC empty";
+        }
+
+        if (error)
+        {
+            alertPanel.SetActive(true);
+            alertPanel.GetComponentInChildren<Text>().text = alertMsg;
+            Button b = alertPanel.GetComponentInChildren<Button>();
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(() => ActiveOnePanel(panels[6]));
+        }
+        else
+        {
+            ActiveOnePanel(panels[10]);
+            string save = JsonUtility.ToJson(selectedNPC);
+            string path = Path.Combine(Application.persistentDataPath, "NPCs", selectedNPC.setName + ".json");
+            File.WriteAllText(path, save);
+
+            dataFiles.NPCDatas.Add(selectedNPC.setName);
+            File.WriteAllText(Path.Combine(Application.persistentDataPath, "datasFile.json"), JsonUtility.ToJson(dataFiles));
+            #if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+            #endif
+        }
+
+        Debug.Log(
+            "Name : " + nextNPC.NPCName +
+            "\nsize : " + nextNPC.numberOf
+        );
+    }
+
+        #endregion
 
     #region OPTION BUTTON
 
@@ -482,11 +795,14 @@ public class ButtonMenu : MonoBehaviour
     #endregion
 
 
-
 }
 
 [SerializeField]
-struct DatasMapFile
+struct DatasFiles
 {
-    public List<string> datas;
+    public List<string> mapDatas;
+    public List<string> buldingDatas;
+    public List<string> itemDatas;
+    public List<string> NPCDatas;
+    public List<string> scenarioDatas;
 }
