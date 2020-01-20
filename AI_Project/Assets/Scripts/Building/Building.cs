@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Building : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class Building : MonoBehaviour
     Area area;
 
     Vector2 elevatorPos;
+
+    public NavMeshSurface surface;
 
     //public GameObject wallPrefab;
     //public Vector3 wallPrefabDim;
@@ -94,6 +97,8 @@ public class Building : MonoBehaviour
             Build(k);
         }
         InstanciateElevator();
+
+        surface.BuildNavMesh(); // Build navmesh surface
 
         Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
     }

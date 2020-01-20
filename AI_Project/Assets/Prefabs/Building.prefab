@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8089832899000454032}
   - component: {fileID: 8089832899000454033}
+  - component: {fileID: -2194802686461219724}
   m_Layer: 0
   m_Name: Building
   m_TagString: Untagged
@@ -52,4 +53,34 @@ MonoBehaviour:
   minPartitionSize: 1
   maxPartitionSize: 3
   volumeReduction: 0.1
+  surface: {fileID: -2194802686461219724}
   theme: {fileID: 11400000, guid: 83703c77ad3bfda4bbf8d56e93626258, type: 2}
+--- !u!114 &-2194802686461219724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8089832899000454034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.13333334
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 0}
