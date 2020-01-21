@@ -7,11 +7,12 @@ using UnityEngine;
 public class ItemParam 
 {
     public string itemName;
-
-    public void tt()
-    {
-
-    }
+    public int itemId;
+    public string itemDesc;
+    public float itemCost;
+    public float itemWeight;
+    public int itemMaxStack;
+    public Item.RARITY itemRarity;
 }
 
 [System.Serializable]

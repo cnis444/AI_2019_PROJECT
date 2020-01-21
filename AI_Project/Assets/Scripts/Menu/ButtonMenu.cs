@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Text;
 
 public class ButtonMenu : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class ButtonMenu : MonoBehaviour
     private GameObject colorPreview;
     public TerrainType nexTerrainType;//the next region
     public NPCParam nextNPC;
+    public QuestParam nextQuest;
+    public List<Mission> nextMissions;
+    public Mission nextMission;
 
     [Header("default list data")]
     public List<MapParam> defaultMap;
@@ -682,13 +686,13 @@ public class ButtonMenu : MonoBehaviour
         bool error = false;
         string alertMsg = "Incomplete selection : ";
 
-        if (nextNPC.NPCName.Length == 0)
+        if (nextNPC.NPCName == null || nextNPC.NPCName.Length == 0)
         {
             error = true;
             alertMsg += "\n\t name invalid";
         }
 
-        if (nextNPC.numberOf <= 1)
+        if (nextNPC.NPCName != null || nextNPC.numberOf <= 1)
         {
             error = true;
             alertMsg += "\n\t NPC number";
@@ -778,7 +782,337 @@ public class ButtonMenu : MonoBehaviour
         );
     }
 
-        #endregion
+    #endregion
+
+    #region CUSTOM QUEST
+
+    public void CustomQuestButton()
+    {
+        selectedQuest = new SetOfQuest();
+        selectedQuest.setName = "";
+        selectedQuest.quests = new List<QuestParam>();
+
+        nextQuest = new QuestParam();
+        nextQuest.missions = new List<Mission>();
+        nextQuest.next = new List<int>();
+    }
+
+    public void NameQuest(string s)
+    {
+        nextQuest.questName = s;
+    }
+
+    public void IdQuest(string s)
+    {
+        int n = -1;
+        try
+        {
+            n = int.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (System.Exception)
+        {
+            n = -1;
+        }
+
+        nextQuest.id = n;
+    }
+
+    public void DescriptionQuest(string s)
+    {
+        nextQuest.description = s;
+    }
+
+    public void NextQuest(string s)
+    {
+        string[] sep = new string[] { " " };
+        string[] tmp = s.Split(sep , System.StringSplitOptions.RemoveEmptyEntries);
+        foreach (string item in tmp)
+        {
+            if (!item.Equals(' '))
+            {
+                float n = -1f;
+                float.TryParse(item, out n);
+                nextQuest.next.Add(Mathf.RoundToInt(n));
+            }
+        }
+    }
+
+    public void SetSetQuestName(string s)
+    {
+        selectedQuest.setName = s;
+    }
+
+    public void AddQuest(GameObject content)
+    {
+        bool error = false;
+        string alertMsg = "Incomplete selection : ";
+
+        if (nextQuest.questName == null || nextQuest.questName.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t name invalid";
+        }
+
+        if (nextQuest.description == null || nextQuest.description.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t description invalid";
+        }
+
+        if (nextQuest.id < 0)
+        {
+            error = true;
+            alertMsg += "\n\t id invalid";
+        }
+
+        if (nextQuest.next.Count < 0)
+        {
+            error = true;
+            alertMsg += "\n\t next invalid";
+        }
+
+        if (nextQuest.missions.Count < 0)
+        {
+            error = true;
+            alertMsg += "\n\t mission invalid";
+        }
+
+        if (error)
+        {
+            alertPanel.SetActive(true);
+            alertPanel.GetComponentInChildren<Text>().text = alertMsg;
+            Button b = alertPanel.GetComponentInChildren<Button>();
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(() => ActiveOnePanel(panels[5]));
+        }
+        else
+        {
+            selectedQuest.quests.Add(nextQuest);
+            GameObject tmpGO = Instantiate(NPCBtnPrefab);
+            tmpGO.transform.SetParent(content.transform);
+            tmpGO.GetComponentInChildren<Text>().text = nextQuest.questName;
+            tmpGO.GetComponent<Button>().onClick.RemoveAllListeners();
+            tmpGO.GetComponent<Button>().onClick.AddListener(() => ShowQuestDesc(nextQuest));
+        }
+    }
+
+    public void ShowQuestDesc(QuestParam q)
+    {
+        GameObject.Find("QuestNameDescHolder").GetComponent<Text>().text = "Quest Name : " + q.questName;
+        GameObject.Find("QuestIdDescHolder").GetComponent<Text>().text = "Quest ID : " +q.id.ToString();
+        GameObject.Find("QuestDescDescHolder").GetComponent<Text>().text = "Quest Description : " +q.description;
+        string toret = "";
+        foreach (int item in q.next)
+        {
+            toret += " " + item.ToString();
+        }
+        GameObject.Find("QuestNextDescHolder").GetComponent<Text>().text = "Quest Next : " + toret;
+    }
+
+    public void AcceptCustomQuest()
+    {
+        bool error = false;
+        string alertMsg = "Incomplete selection : ";
+
+        if (selectedQuest.setName == null || selectedQuest.setName.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t set name invalid";
+        }
+
+        if (selectedQuest.quests.Count <= 0)
+        {
+            error = true;
+            alertMsg += "\n\t List Quest empty";
+        }
+
+        if (error)
+        {
+            alertPanel.SetActive(true);
+            alertPanel.GetComponentInChildren<Text>().text = alertMsg;
+            Button b = alertPanel.GetComponentInChildren<Button>();
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(() => ActiveOnePanel(panels[5]));
+        }
+        else
+        {
+            ActiveOnePanel(panels[11]);
+            string save = JsonUtility.ToJson(selectedQuest);
+            string path = Path.Combine(Application.persistentDataPath, "Quests", selectedQuest.setName + ".json");
+            File.WriteAllText(path, save);
+
+            dataFiles.scenarioDatas.Add(selectedQuest.setName);
+            File.WriteAllText(Path.Combine(Application.persistentDataPath, "datasFile.json"), JsonUtility.ToJson(dataFiles));
+            #if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+            #endif
+        }
+
+    }
+
+    #region CUSTOM MISSION
+
+    public void GoToMission(GameObject content)
+    {
+        nextMissions = new List<Mission>();
+        nextMission = new Mission();
+        nextMission.missionName = "";
+        nextMission.missionDescription = "";
+        nextMission.missionKey = "";
+        nextMission.objectif = Objectif.KILL;
+        nextMission.max = -1;
+        nextMission.current = 0;
+        nextMission.order = -1;
+        nextMission.finish = false;
+        for (int i = content.transform.childCount-1; i>=0; i--)
+        {
+            Destroy(content.transform.GetChild(i).gameObject);
+        }
+    }
+
+    public void NameMission(string s)
+    {
+        nextMission.missionName = s;
+    }
+
+    public void DescMission(string s)
+    {
+        nextMission.missionDescription = s;
+    }
+
+    public void KeyMission(string s)
+    {
+        nextMission.missionKey = s;
+    }
+
+    public void MaxMission(string s)
+    {
+        int n = -1;
+        try
+        {
+            n = int.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (System.Exception)
+        {
+            n = -1;
+        }
+
+        nextMission.max = n;
+    }
+
+    public void OrderMission(string s)
+    {
+        int n = -1;
+        try
+        {
+            n = int.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (System.Exception)
+        {
+            n = -1;
+        }
+
+        nextMission.order = n;
+    }
+
+    public void SetDropDownMission(int n)
+    {
+        switch (n)
+        {
+            case 0: nextMission.objectif = Objectif.KILL; break;
+            case 1: nextMission.objectif = Objectif.SAVE; break;
+            case 2: nextMission.objectif = Objectif.DESTROY; break;
+            case 3: nextMission.objectif = Objectif.INTERACT; break;
+            case 4: nextMission.objectif = Objectif.POSITION; break;
+            case 5: nextMission.objectif = Objectif.TIME; break;
+            default: break;
+        }
+    }
+
+    public void AddMission(GameObject content)
+    {
+        bool error = false;
+        string alertMsg = "Incomplete selection : ";
+
+        if (nextMission.missionName == null || nextMission.missionName.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t name invalid";
+        }
+
+        if (nextMission.missionDescription == null || nextMission.missionDescription.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t description invalid";
+        }
+
+        if (nextMission.missionKey == null || nextMission.missionKey.Length == 0)
+        {
+            error = true;
+            alertMsg += "\n\t key invalid";
+        }
+
+        if (nextMission.max < 0)
+        {
+            error = true;
+            alertMsg += "\n\t max invalid";
+        }
+
+        if (nextMission.order < 0)
+        {
+            error = true;
+            alertMsg += "\n\t order invalid";
+        }
+
+        if (error)
+        {
+            alertPanel.SetActive(true);
+            alertPanel.GetComponentInChildren<Text>().text = alertMsg;
+            Button b = alertPanel.GetComponentInChildren<Button>();
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(() => ActiveOnePanel(panels[13]));
+        }
+        else
+        {
+            nextMissions.Add(nextMission);
+            GameObject tmpGO = Instantiate(NPCBtnPrefab);
+            Destroy(tmpGO.GetComponent<Button>());
+            tmpGO.transform.SetParent(content.transform);
+            tmpGO.GetComponentInChildren<Text>().text = nextMission.missionName;
+        }
+    }
+
+    public void ValidMissions()
+    {
+        bool error = false;
+        string alertMsg = "Incomplete selection : ";
+
+        if (nextMissions.Count <= 0)
+        {
+            error = true;
+            alertMsg += "\n\t list empty";
+        }
+
+
+        if (error)
+        {
+            alertPanel.SetActive(true);
+            alertPanel.GetComponentInChildren<Text>().text = alertMsg;
+            Button b = alertPanel.GetComponentInChildren<Button>();
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(() => ActiveOnePanel(panels[13]));
+        }
+        else
+        {
+            nextQuest.missions = nextMissions;
+            ActiveOnePanel(panels[5]);
+        }
+    }
+
+    #endregion
+
+
+    #endregion
 
     #region OPTION BUTTON
 

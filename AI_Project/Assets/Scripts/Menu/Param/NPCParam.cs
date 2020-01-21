@@ -10,10 +10,7 @@ public class NPCParam
     public int difficulty;
     public RuntimeAnimatorController behaviorGraph;
 
-    public void tt()
-    {
-       
-    }
+
 }
 
 [System.Serializable]

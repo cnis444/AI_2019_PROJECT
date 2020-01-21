@@ -9,8 +9,6 @@ public class QuestParam
     public string questName;
     public int id;
     public string description;
-    public int levelOrder;
-    public int maxOrder;
     public List<Mission> missions;
     public List<int> next;
 
