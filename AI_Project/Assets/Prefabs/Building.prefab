@@ -53,7 +53,7 @@ MonoBehaviour:
   minPartitionSize: 1
   maxPartitionSize: 3
   volumeReduction: 0.1
-  surface: {fileID: 0}
+  surface: {fileID: 3130869653559867623}
   theme: {fileID: 11400000, guid: 83703c77ad3bfda4bbf8d56e93626258, type: 2}
 --- !u!114 &3130869653559867623
 MonoBehaviour:
