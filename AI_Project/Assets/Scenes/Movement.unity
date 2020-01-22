@@ -127,11 +127,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1319664641}
     m_Modifications:
-    - target: {fileID: 4142561158200094488, guid: ae789a4592cedcd4fa19c30254c1e484,
-        type: 3}
-      propertyPath: m_Name
-      value: door
-      objectReference: {fileID: 0}
     - target: {fileID: 1091573927878991115, guid: ae789a4592cedcd4fa19c30254c1e484,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -186,6 +181,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4142561158200094488, guid: ae789a4592cedcd4fa19c30254c1e484,
+        type: 3}
+      propertyPath: m_Name
+      value: door
       objectReference: {fileID: 0}
     - target: {fileID: 215103184636698467, guid: ae789a4592cedcd4fa19c30254c1e484,
         type: 3}
@@ -273,7 +273,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -2194802686461219724, guid: b4be5fe9939f9a94c8594c86e1e9a423, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b4be5fe9939f9a94c8594c86e1e9a423, type: 3}
 --- !u!1 &332437113 stripped
 GameObject:
@@ -905,11 +906,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1319664641}
     m_Modifications:
-    - target: {fileID: 6798688478360104474, guid: e9b308a149caa2f4984f108da389f11d,
-        type: 3}
-      propertyPath: m_Name
-      value: ScalableElevator
-      objectReference: {fileID: 0}
     - target: {fileID: 6798688478360104477, guid: e9b308a149caa2f4984f108da389f11d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -964,6 +960,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6798688478360104474, guid: e9b308a149caa2f4984f108da389f11d,
+        type: 3}
+      propertyPath: m_Name
+      value: ScalableElevator
       objectReference: {fileID: 0}
     - target: {fileID: 4497296828435429204, guid: e9b308a149caa2f4984f108da389f11d,
         type: 3}
