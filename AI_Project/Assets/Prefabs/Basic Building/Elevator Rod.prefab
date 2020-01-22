@@ -42,7 +42,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3859355814291594241}
-  m_Mesh: {fileID: 2534964839176971238, guid: 27783a11e61824041930a2ee25fcf263, type: 3}
+  m_Mesh: {fileID: 2534964839176971238, guid: bfdbe0a87efa02f428030f86744a28a5, type: 3}
 --- !u!23 &3293250247674980573
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34eb6c67a46dc964abff0054336642ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightMat: {fileID: 2100000, guid: 06e5f62647486a044bb97aff351369f1, type: 2}
+  highlighted: 0
 --- !u!136 &1362197975524196701
 CapsuleCollider:
   m_ObjectHideFlags: 0
