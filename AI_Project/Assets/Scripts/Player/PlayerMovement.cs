@@ -17,20 +17,31 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
 
+    public Camera playerCam, freeCam;
+
+    private bool isCamFree = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        freeCam.gameObject.SetActive(false);
+        playerCam.gameObject.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Move();
-        CheckInteraction();
+        UnlockCam();
+        if (isCamFree) {
+            FreeMove();
+        }
+        else {
+            Move();
+            CheckInteraction();
+        }
     }
 
-    public void Move() {
+    private void Move() {
         if (isClimbing) {
             Climb();
         }
@@ -64,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void Climb() {
+    private void Climb() {
         float y = Input.GetAxis("Vertical");
         Vector3 move = transform.up * y;
         move *= walkSpeed;
@@ -79,8 +90,8 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(move * Time.deltaTime);
     }
 
-    public void CheckInteraction() {
-        Ray forward = Camera.main.ScreenPointToRay(Input.mousePosition);
+    private void CheckInteraction() {
+        Ray forward = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(forward, out hit, maxInteractionDistance)) {
             InteractiveObject o = hit.collider.gameObject.GetComponent<InteractiveObject>();
@@ -89,6 +100,33 @@ public class PlayerMovement : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E)) {
                     o.DoSomething();
                 }
+            }
+        }
+    }
+
+    private void FreeMove() {
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        float y = Input.GetAxis("Height");
+
+        Vector3 move = freeCam.transform.right * x + freeCam.transform.up * y + freeCam.transform.forward * z;
+        move = move.normalized * Mathf.Max(Mathf.Abs(x), Mathf.Abs(y), Mathf.Abs(z));
+
+        freeCam.transform.Translate(move * runSpeed * Time.deltaTime);
+    }
+
+    private void UnlockCam() {
+        if (freeCam && Input.GetKeyDown(KeyCode.F)) {
+            isCamFree = !isCamFree;
+            if (isCamFree) {
+                playerCam.gameObject.SetActive(false);
+                freeCam.gameObject.SetActive(true);
+                //freeCam.transform.SetPositionAndRotation(playerCam.transform.position, playerCam.transform.rotation);
+                freeCam.transform.position = playerCam.transform.position;
+            }
+            else {
+                playerCam.gameObject.SetActive(true);
+                freeCam.gameObject.SetActive(false);
             }
         }
     }
