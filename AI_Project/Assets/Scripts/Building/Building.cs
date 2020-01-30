@@ -139,37 +139,24 @@ public class Building : MonoBehaviour
                 inside.Add(r);
             }
         }
-         
+
         // Delete some rectangles on the border
-        for (int k = 0; k < Mathf.Min(count, rects.Count - 1); k++) {
-            int idx = Random.Range(0, border.Count);
-            RectInt rect = border[idx];
-            //Debug.Log(string.Format("Deleting rectangle {0}", rect));
-            border.RemoveAt(idx);
-            
-            // Some rectangles from the inside are now on the border
-            for (int i = inside.Count - 1; i >= 0; i--) { // from last to first
-                if (Area.TouchingEdges(rect, inside[i]).Count > 0) {
-                    //print("switching");
-                    border.Add(inside[i]); // /!\ Bug here
-                    inside.RemoveAt(i);    // /!\ or here
+        if (border.Count > 0) {
+            for (int k = 0; k < Mathf.Min(count, rects.Count - 1); k++) {
+                int idx = Random.Range(0, border.Count);
+                RectInt rect = border[idx];
+                //Debug.Log(string.Format("Deleting rectangle {0}", rect));
+                border.RemoveAt(idx);
+
+                // Some rectangles from the inside are now on the border
+                for (int i = inside.Count - 1; i >= 0; i--) { // from last to first
+                    if (Area.TouchingEdges(rect, inside[i]).Count > 0) {
+                        //print("switching");
+                        border.Add(inside[i]); // /!\ Bug here
+                        inside.RemoveAt(i);    // /!\ or here
+                    }
                 }
             }
-
-            //List<RectInt> remove = new List<RectInt>();
-            //foreach (RectInt r in inside) {
-            //    if (Area.TouchingEdges(rect, r).Count > 0) {
-            //        border.Add(r);
-            //        remove.Add(r);
-            //    }
-            //}
-            //Debug.Log("inside: " + ListToString(inside));
-            //Debug.Log("remove: " + ListToString(remove));
-            //if (m < 64) {
-            //    Debug.Log("removing");
-            //    foreach(RectInt r in remove) { inside.Remove(r); }
-            //}
-            //m++;
         }
         rects = border;
         rects.AddRange(inside);
