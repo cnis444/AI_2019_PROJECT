@@ -6,6 +6,8 @@ public class FreeCamLook : MonoBehaviour
 {
     public float mouseSensitivity = 100f;
 
+    float xRotation = 0f;
+
     // Start is called before the first frame update
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
@@ -18,12 +20,17 @@ public class FreeCamLook : MonoBehaviour
 
         Vector3 move = Vector3.up * mouseX + transform.right * mouseY;
 
-        //transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(move);
+        ////transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        //transform.Rotate(move);
 
-        // Clamp vertical rotation
-        Quaternion rotation = transform.rotation;
-        rotation.y = Mathf.Clamp(rotation.y, -90f, 90f);
-        transform.rotation = rotation;
+        //// Clamp vertical rotation
+        //Quaternion rotation = transform.rotation;
+        //rotation.y = Mathf.Clamp(rotation.y, -90f, 90f);
+        //transform.rotation = rotation;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.Rotate(Vector3.up * mouseX);
     }
 }

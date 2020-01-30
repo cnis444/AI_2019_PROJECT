@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
 
     public Camera playerCam, freeCam;
+    public GameObject freeBody;
 
     private bool isCamFree = false;
 
@@ -25,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         freeCam.gameObject.SetActive(false);
+        freeBody.gameObject.SetActive(false);
         playerCam.gameObject.SetActive(true);
     }
 
@@ -33,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
     {
         UnlockCam();
         if (isCamFree) {
-            FreeMove();
+            //FreeMove();
         }
         else {
             Move();
@@ -109,10 +111,10 @@ public class PlayerMovement : MonoBehaviour
         float z = Input.GetAxis("Vertical");
         float y = Input.GetAxis("Height");
 
-        Vector3 move = freeCam.transform.right * x + freeCam.transform.up * y + freeCam.transform.forward * z;
+        Vector3 move = freeBody.transform.right * x + freeBody.transform.up * y + freeBody.transform.forward * z;
         move = move.normalized * Mathf.Max(Mathf.Abs(x), Mathf.Abs(y), Mathf.Abs(z));
 
-        freeCam.transform.Translate(move * runSpeed * Time.deltaTime);
+        freeBody.transform.Translate(move * runSpeed * Time.deltaTime);
     }
 
     private void UnlockCam() {
@@ -121,12 +123,14 @@ public class PlayerMovement : MonoBehaviour
             if (isCamFree) {
                 playerCam.gameObject.SetActive(false);
                 freeCam.gameObject.SetActive(true);
+                freeBody.gameObject.SetActive(true);
                 //freeCam.transform.SetPositionAndRotation(playerCam.transform.position, playerCam.transform.rotation);
-                freeCam.transform.position = playerCam.transform.position;
+                freeBody.transform.position = playerCam.transform.position;
             }
             else {
                 playerCam.gameObject.SetActive(true);
                 freeCam.gameObject.SetActive(false);
+                freeBody.gameObject.SetActive(false);
             }
         }
     }
