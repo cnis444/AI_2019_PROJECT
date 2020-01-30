@@ -103,17 +103,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void FreeMove() {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        float y = Input.GetAxis("Height");
-
-        Vector3 move = freeBody.transform.right * x + freeBody.transform.up * y + freeBody.transform.forward * z;
-        move = move.normalized * Mathf.Max(Mathf.Abs(x), Mathf.Abs(y), Mathf.Abs(z));
-
-        freeBody.transform.Translate(move * runSpeed * Time.deltaTime);
-    }
-
     private void UnlockCam() {
         if (freeCam && Input.GetKeyDown(KeyCode.F)) {
             isCamFree = !isCamFree;
@@ -121,7 +110,6 @@ public class PlayerMovement : MonoBehaviour
                 playerCam.gameObject.SetActive(false);
                 freeCam.gameObject.SetActive(true);
                 freeBody.gameObject.SetActive(true);
-                //freeCam.transform.SetPositionAndRotation(playerCam.transform.position, playerCam.transform.rotation);
                 freeBody.transform.position = playerCam.transform.position;
                 freeBody.transform.rotation = transform.rotation;
                 freeCam.GetComponent<MouseLook>().CopyRotation(playerCam.GetComponent<MouseLook>());
