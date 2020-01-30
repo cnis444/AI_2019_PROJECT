@@ -1,4 +1,4 @@
-# AI Project 2019
+﻿# AI Project 2019
 
 ## Introduction
 
@@ -29,3 +29,7 @@ Un système de quêtes a également été mis en place permettant que créer des
 ## PNJs (personnages non joueurs)
 
 Le comportement des PNJs est défini selon un Arbre de Décision. Grace à ces arbres, plusieurs comportements peuvent être codés permettant de créer plusieurs type d'ennemis, comme des sbires où des boss.
+
+## Configuration
+
+Nous avons ajouté un panneau de configuration affiché au lancement permettant à l'utilisateur de configurer les différents paramètres de génération du jeu. Grâce à cela, le joueur peut réellement rendre chaque partie unique.
