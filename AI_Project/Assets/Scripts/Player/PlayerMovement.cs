@@ -22,12 +22,16 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isCamFree = false;
 
+
+    public Light playerLight;
+
     // Start is called before the first frame update
     void Start()
     {
         freeCam.gameObject.SetActive(false);
         freeBody.gameObject.SetActive(false);
         playerCam.gameObject.SetActive(true);
+        playerLight.enabled = false;
     }
 
     // Update is called once per frame
@@ -38,6 +42,12 @@ public class PlayerMovement : MonoBehaviour
             Move();
             CheckInteraction();
         }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            playerLight.enabled = !playerLight.enabled;
+        }
+
     }
 
     private void Move() {

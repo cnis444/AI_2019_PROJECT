@@ -12,10 +12,6 @@ public class QuestParam
     public List<Mission> missions;
     public List<int> next;
 
-    public void tt()
-    {
-
-    }
 }
 
 [System.Serializable]
