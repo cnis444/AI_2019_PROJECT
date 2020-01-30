@@ -38,7 +38,7 @@ public class Building : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Generating building");
+        //Debug.Log("Generating building");
         if (useRandomSeed) {
             seed = (int)System.DateTime.Now.Ticks;
         }
@@ -49,7 +49,7 @@ public class Building : MonoBehaviour
         partition = new SpacePartition(new RectInt(0, 0, width, length), minPartitionSize, maxPartitionSize, Random.Range(-1000000, 1000000));
         rects = partition.GetSpaces();
         int count = Mathf.FloorToInt(rects.Count * volumeReduction);
-        Debug.Log("floorToInt " + count);
+        //Debug.Log("floorToInt " + count);
         //rectangleToRemove = Mathf.FloorToInt(rects.Count * volumeReduction);
         //Debug.Log("floorToInt done");
 
@@ -100,7 +100,7 @@ public class Building : MonoBehaviour
 
         surface.BuildNavMesh(); // Build navmesh surface
 
-        Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
+        //Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
     }
 
     // Update is called once per frame

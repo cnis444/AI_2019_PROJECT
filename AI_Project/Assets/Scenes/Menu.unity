@@ -5443,7 +5443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &266299147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9670,6 +9670,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2032474654}
+        m_MethodName: InitSetUp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &478129849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11425,7 +11436,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 16.25
+  m_fontSize: 17.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -19965,7 +19976,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 14.55
+  m_fontSize: 15.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -43057,7 +43068,7 @@ GameObject:
   - component: {fileID: 1982470492}
   - component: {fileID: 1982470491}
   m_Layer: 5
-  m_Name: NextBTn
+  m_Name: PlayButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43121,11 +43132,22 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1982470492}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2032474654}
+        m_MethodName: PlayButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1982470492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44538,7 +44560,21 @@ MonoBehaviour:
   - setName: set bulding 1
     buldings:
     - buldingName: b1
+      width: 20
+      length: 30
+      height: 4
+      windowProbability: 0.2
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.1
     - buldingName: b2
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
   defaultSetItem:
   - setName: test set item
     items:
@@ -44556,29 +44592,129 @@ MonoBehaviour:
       itemWeight: 0
       itemMaxStack: 0
       itemRarity: 0
+    - itemName: i2
+      itemId: 0
+      itemDesc: 
+      itemCost: 0
+      itemWeight: 0
+      itemMaxStack: 0
+      itemRarity: 0
   defaultSetNPC:
   - setName: test set NPC
     NPCs:
     - NPCName: n1
-      numberOf: 50
+      numberOf: 1
       difficulty: 2
       behaviorGraph: {fileID: 9100000, guid: a8bda5d5471420b48a6a8e2af5ff030a, type: 2}
     - NPCName: n2
-      numberOf: 63
+      numberOf: 8
       difficulty: 4
       behaviorGraph: {fileID: 9100000, guid: c7a85a7d297cf2a4c9227051df1ce02d, type: 2}
   defaultSetQuest:
   - setName: test quest set
     quests:
-    - questName: q1
+    - questName: Your Friend
       id: 0
-      description: 
-      missions: []
+      description: Save Your Friend
+      missions:
+      - missionName: Blue Plant
+        missionDescription: Find a blue plant
+        missionKey: blue plant
+        objectif: 3
+        max: 3
+        current: 0
+        order: 0
+        finish: 0
+      - missionName: Green Plant
+        missionDescription: Find a green plant
+        missionKey: green plant
+        objectif: 3
+        max: 3
+        current: 0
+        order: 0
+        finish: 0
+      - missionName: Heal Potion
+        missionDescription: Create a heal potion
+        missionKey: heal potion
+        objectif: 3
+        max: 1
+        current: 0
+        order: 1
+        finish: 0
+      - missionName: Save
+        missionDescription: Give the heal potion to your friend
+        missionKey: save friend
+        objectif: 3
+        max: 1
+        current: 0
+        order: 2
+        finish: 0
+      next: 0100000002000000
+    - questName: Your Girlfriend
+      id: 1
+      description: Save your girl friend
+      missions:
+      - missionName: Go To Zone2
+        missionDescription: 'Go to Zone 2 '
+        missionKey: zone2
+        objectif: 4
+        max: 1
+        current: 0
+        order: 0
+        finish: 0
+      - missionName: Kill the minion
+        missionDescription: Kill 7 minions
+        missionKey: minions
+        objectif: 0
+        max: 7
+        current: 0
+        order: 1
+        finish: 0
+      - missionName: Break the wall
+        missionDescription: 'Break the wall '
+        missionKey: wall break
+        objectif: 2
+        max: 1
+        current: 0
+        order: 2
+        finish: 0
+      - missionName: Save Your Girlfriend
+        missionDescription: Save Your Girlfriend
+        missionKey: Girlfriend
+        objectif: 3
+        max: 1
+        current: 0
+        order: 3
+        finish: 0
       next: 
-    - questName: q2
-      id: 0
-      description: 
-      missions: []
+    - questName: Your Nemesis
+      id: 2
+      description: The final fight
+      missions:
+      - missionName: Go to zone 3
+        missionDescription: Go to zone 3
+        missionKey: zone3
+        objectif: 4
+        max: 1
+        current: 0
+        order: 0
+        finish: 0
+      - missionName: Survive
+        missionDescription: Survive 15 s
+        missionKey: survive
+        objectif: 5
+        max: 1
+        current: 0
+        order: 1
+        finish: 0
+      - missionName: KKKIIIILLLL !!!!!
+        missionDescription: MURDER !!!
+        missionKey: end
+        objectif: 0
+        max: 1
+        current: 0
+        order: 2
+        finish: 0
       next: 
   defaultNPCAI:
   - {fileID: 9100000, guid: a8bda5d5471420b48a6a8e2af5ff030a, type: 2}
@@ -45002,7 +45138,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

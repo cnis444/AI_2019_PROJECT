@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ConstraintObject : MonoBehaviour
+[System.Serializable]
+public class ConstraintObject : MonoBehaviour
 {
-    public List<Constraint> Constraints { get; }
-    public int maxEntity { get; }
+    public List<Constraint> Constraints { get; set; }
+    public int maxEntity { get; set; }
 
 }

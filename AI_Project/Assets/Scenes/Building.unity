@@ -487,6 +487,21 @@ PrefabInstance:
       propertyPath: surface
       value: 
       objectReference: {fileID: 8089832898424828232}
+    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: useRandomSeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: maxPartitionSize
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: windowProbability
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: -2194802686461219724, guid: b4be5fe9939f9a94c8594c86e1e9a423,
         type: 3}
       propertyPath: m_CollectObjects
