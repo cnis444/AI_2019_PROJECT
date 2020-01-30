@@ -161,6 +161,10 @@ public class ButtonMenu : MonoBehaviour
             }
         }
         mapChoice.AddOptions(dataFiles.mapDatas);
+        if(defaultMap.Count > 0)
+        {
+            selectedMap = defaultMap[0];
+        }
     }
 
     public void SetDropDownMap(int n)
@@ -184,6 +188,10 @@ public class ButtonMenu : MonoBehaviour
             }
         }
         buldingChoice.AddOptions(dataFiles.buldingDatas);
+        if (defaultSetBulding.Count > 0)
+        {
+            selectedBulding = defaultSetBulding[0];
+        }
     }
 
     public void SetDropDownBulding(int n)
@@ -208,6 +216,10 @@ public class ButtonMenu : MonoBehaviour
             }
         }
         itemChoice.AddOptions(dataFiles.itemDatas);
+        if (defaultSetItem.Count > 0)
+        {
+            selectedItem = defaultSetItem[0];
+        }
     }
 
     public void SetDropDownItem(int n)
@@ -219,7 +231,7 @@ public class ButtonMenu : MonoBehaviour
     {
         NPCChoice.ClearOptions();
         NPCParams.Clear();
-        Debug.Log(dataFiles.NPCDatas);
+        //Debug.Log(dataFiles.NPCDatas);
         foreach (string bul in dataFiles.NPCDatas)
         {
             string filePath = Path.Combine(Application.persistentDataPath, "NPCs", bul);
@@ -232,6 +244,10 @@ public class ButtonMenu : MonoBehaviour
             }
         }
         NPCChoice.AddOptions(dataFiles.NPCDatas);
+        if (defaultSetNPC.Count > 0)
+        {
+            selectedNPC = defaultSetNPC[0];
+        }
     }
 
     public void SetDropDownNPC(int n)
@@ -255,6 +271,10 @@ public class ButtonMenu : MonoBehaviour
             }
         }
         questChoice.AddOptions(dataFiles.scenarioDatas);
+        if (defaultSetQuest.Count > 0)
+        {
+            selectedQuest = defaultSetQuest[0];
+        }
     }
 
     public void SetDropDownQuest(int n)
@@ -276,14 +296,21 @@ public class ButtonMenu : MonoBehaviour
 
     #region START BUTTON
 
-    public void StartB()
+    public void InitSetUp()
     {
-        if(mapParams.Count == 0)
-        {
-            SetMapChoice();
-        }
-        setUp.GetComponent<SetUp>().mapParam = selectedMap;
+        SetUp tmpSetUp = setUp.GetComponent<SetUp>();
+        tmpSetUp.mapParam = selectedMap;
+        tmpSetUp.setOfBulding = selectedBulding;
+        tmpSetUp.setOfItem = selectedItem;
+        tmpSetUp.setOfNPC = selectedNPC;
+        tmpSetUp.setOfQuest = selectedQuest;
 
+        tmpSetUp.CreateAllConstraint();
+        
+    }
+
+    public void PlayButton()
+    {
         SceneManager.LoadScene("MapGeneration");
     }
 

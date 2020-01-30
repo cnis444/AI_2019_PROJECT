@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
+#region ABSTRACT
 
 public abstract class Constraint{ }
 
@@ -421,6 +422,12 @@ public abstract class EntityToPositionDistanceComparisonConstraint : PositionCon
     }
 }
 
+#endregion
+
+#region ENTITY
+
+#region ENTITY GLOBAL
+
 public class NumberEntityDifferentConstraint : NumberEntityComparisonConstraint
 {
     public NumberEntityDifferentConstraint(Type id, int val) : base(id, val, "ne(") { }
@@ -451,6 +458,10 @@ public class NumberEntityLessStrictConstraint : NumberEntityComparisonConstraint
     public NumberEntityLessStrictConstraint(Type id, int val) : base(id, val, "lt(") { }
     public NumberEntityLessStrictConstraint(string id, int val) : base(id, val, "lt(") { }
 }
+
+#endregion
+
+#region PER ENTITY
 
 public class NumberEntityPerEntityDifferentConstraint : NumberEntityPerEntityComparisonConstraint
 {
@@ -495,6 +506,13 @@ public class NumberEntityPerEntityLessStrictConstraint : NumberEntityPerEntityCo
     public NumberEntityPerEntityLessStrictConstraint(string id1, Type id2, int val, string op) : base(id1, id2, val, "lt(") { }
 }
 
+#endregion
+
+#endregion
+
+#region DISTANCE
+
+#region RELATIVE DISTANCE
 public class EntityRelativeDistanceDifferentConstraint : EntityRelativeDistanceComparisonConstraint
 {
     public EntityRelativeDistanceDifferentConstraint(Type id1, Type id2, int distance) : base(id1, id2, distance, "ne(") { }
@@ -563,6 +581,10 @@ public class EntityRelativeDistanceLessStrictConstraint : EntityRelativeDistance
     public EntityRelativeDistanceLessStrictConstraint(string id1, Type id2, float distance) : base(id1, id2, distance, "lt(") { }
 }
 
+#endregion
+
+#region TO POSITION DISTANCE
+
 public class EntityToPositionDistanceDifferentConstraint : EntityToPositionDistanceComparisonConstraint
 {
     public EntityToPositionDistanceDifferentConstraint(Type id1, int distance, Vector3Int pos) : base(id1, distance, "ne(", pos) { }
@@ -629,3 +651,7 @@ public class EntityToPositionDistanceGreaterStrictConstraint : EntityToPositionD
     public EntityToPositionDistanceGreaterStrictConstraint(string id1, float distance, Vector3 pos) : base(id1, distance, "gt(", pos) { }
     public EntityToPositionDistanceGreaterStrictConstraint(Type id1, float distance, Vector3 pos) : base(id1, distance, "gt(", pos) { }
 }
+
+#endregion
+
+#endregion

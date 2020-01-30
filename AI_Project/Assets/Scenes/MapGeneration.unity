@@ -287,8 +287,8 @@ MonoBehaviour:
   mapMaterial: {fileID: 2100000, guid: 040fb2ae8bb91174694662041acc2f13, type: 2}
   prefabWaterPlane: {fileID: 3844674515369181456, guid: 1b29c0efa5b13c64eb9286b7ee65deee,
     type: 3}
-  text: {fileID: 4900000, guid: 88739f816e45e1e45895085fbe069e2e, type: 3}
-  str: 
+  prefabBulding: {fileID: 8089832899000454034, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+    type: 3}
 --- !u!4 &836957737
 Transform:
   m_ObjectHideFlags: 0

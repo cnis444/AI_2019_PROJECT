@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Quest 
+public class Quest : ConstraintObject
 {
 
     public string questName;
@@ -22,7 +22,8 @@ public class Quest
             if (string.Equals(missions[i].missionKey, key) && missions[i].order <= levelOder)
                 return true;
         }
-        return false;
+
+        return false; 
     }
 
     public void FinishMission(string key, int n)
