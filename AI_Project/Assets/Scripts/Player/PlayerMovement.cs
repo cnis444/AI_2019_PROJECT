@@ -34,10 +34,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         UnlockCam();
-        if (isCamFree) {
-            //FreeMove();
-        }
-        else {
+        if (!isCamFree) {
             Move();
             CheckInteraction();
         }
@@ -126,6 +123,8 @@ public class PlayerMovement : MonoBehaviour
                 freeBody.gameObject.SetActive(true);
                 //freeCam.transform.SetPositionAndRotation(playerCam.transform.position, playerCam.transform.rotation);
                 freeBody.transform.position = playerCam.transform.position;
+                freeBody.transform.rotation = transform.rotation;
+                freeCam.GetComponent<MouseLook>().CopyRotation(playerCam.GetComponent<MouseLook>());
             }
             else {
                 playerCam.gameObject.SetActive(true);
