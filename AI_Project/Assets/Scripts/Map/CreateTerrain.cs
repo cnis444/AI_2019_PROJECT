@@ -120,6 +120,18 @@ public class CreateTerrain : MonoBehaviour
                 SetBuildingParam(bldGO.GetComponent<Building>(), bldParam);
                 bldGO.transform.SetParent(meshObject.transform);
                 bldGO.transform.localPosition = new Vector3(-bldParam.width, 0, -bldParam.length);
+
+                //int half = MapGenerator.mapChunkSize / 2;
+                //for (int i = half - 6; i < half + 96; i++)
+                //{
+                //    for (int j = half - 46; j < half + 6; j++)
+                //    {
+                //        mapData.heighMap[i, j] = 0.5f;
+                //        mapData.colourMap[j * MapGenerator.mapChunkSize + i] = Color.grey;
+
+                //    }
+                //}
+
             }
 
             Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, MapGenerator.mapChunkSize, MapGenerator.mapChunkSize);

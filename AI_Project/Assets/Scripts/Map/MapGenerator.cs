@@ -7,7 +7,7 @@ using System.Threading;
 public class MapGenerator : MonoBehaviour
 {
 
-    public const int mapChunkSize = 50;
+    public const int mapChunkSize = 100;
     public float noiseScale;
 
     public int octave;
