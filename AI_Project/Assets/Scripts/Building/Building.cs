@@ -38,7 +38,7 @@ public class Building : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Generating building");
+        //Debug.Log("Generating building");
         if (useRandomSeed) {
             seed = (int)System.DateTime.Now.Ticks;
         }
@@ -49,7 +49,7 @@ public class Building : MonoBehaviour
         partition = new SpacePartition(new RectInt(0, 0, width, length), minPartitionSize, maxPartitionSize, Random.Range(-1000000, 1000000));
         rects = partition.GetSpaces();
         int count = Mathf.FloorToInt(rects.Count * volumeReduction);
-        Debug.Log("floorToInt " + count);
+        //Debug.Log("floorToInt " + count);
         //rectangleToRemove = Mathf.FloorToInt(rects.Count * volumeReduction);
         //Debug.Log("floorToInt done");
 
@@ -100,7 +100,7 @@ public class Building : MonoBehaviour
 
         surface.BuildNavMesh(); // Build navmesh surface
 
-        Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
+        //Debug.Log(string.Format("Building built in {0} ms", (System.DateTime.Now - start).Milliseconds));
     }
 
     // Update is called once per frame
@@ -139,14 +139,17 @@ public class Building : MonoBehaviour
                 inside.Add(r);
             }
         }
-         
+
         // Delete some rectangles on the border
         for (int k = 0; k < Mathf.Min(count, rects.Count - 1); k++) {
+            if (border.Count == 0) {
+                break; // Nothing more in the border
+            }
             int idx = Random.Range(0, border.Count);
             RectInt rect = border[idx];
             //Debug.Log(string.Format("Deleting rectangle {0}", rect));
             border.RemoveAt(idx);
-            
+
             // Some rectangles from the inside are now on the border
             for (int i = inside.Count - 1; i >= 0; i--) { // from last to first
                 if (Area.TouchingEdges(rect, inside[i]).Count > 0) {
@@ -155,21 +158,6 @@ public class Building : MonoBehaviour
                     inside.RemoveAt(i);    // /!\ or here
                 }
             }
-
-            //List<RectInt> remove = new List<RectInt>();
-            //foreach (RectInt r in inside) {
-            //    if (Area.TouchingEdges(rect, r).Count > 0) {
-            //        border.Add(r);
-            //        remove.Add(r);
-            //    }
-            //}
-            //Debug.Log("inside: " + ListToString(inside));
-            //Debug.Log("remove: " + ListToString(remove));
-            //if (m < 64) {
-            //    Debug.Log("removing");
-            //    foreach(RectInt r in remove) { inside.Remove(r); }
-            //}
-            //m++;
         }
         rects = border;
         rects.AddRange(inside);

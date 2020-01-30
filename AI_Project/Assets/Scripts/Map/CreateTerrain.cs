@@ -14,9 +14,9 @@ public class CreateTerrain : MonoBehaviour
     int chunkSize;
 
     public GameObject prefabWaterPlane;
-    public TextAsset text;
+    private SetUp setUp;
 
-    public string str;
+    public GameObject prefabBulding;
 
     private void Start()
     {
@@ -26,22 +26,21 @@ public class CreateTerrain : MonoBehaviour
         GameObject tmpGO = GameObject.Find("SetUp");
         if (tmpGO != null)
         {
-            SetUp set = tmpGO.GetComponent<SetUp>();
-            mapGenerator.name = set.mapParam.mapName;
-            mapGenerator.octave = set.mapParam.octave;
-            mapGenerator.persistance = set.mapParam.persistance;
-            mapGenerator.lacunarity = set.mapParam.lacunarity;
-            mapGenerator.seed = set.mapParam.seed;
-            numberOfChunk = set.mapParam.chunks;
-            mapGenerator.meshHeightMultiplier = set.mapParam.highCoeff;
-            mapGenerator.regions = new TerrainType[set.mapParam.regions.Count];
-            for (int i = 0; i < set.mapParam.regions.Count; i++)
+            setUp = tmpGO.GetComponent<SetUp>();
+            mapGenerator.name = setUp.mapParam.mapName;
+            mapGenerator.octave = setUp.mapParam.octave;
+            mapGenerator.persistance = setUp.mapParam.persistance;
+            mapGenerator.lacunarity = setUp.mapParam.lacunarity;
+            mapGenerator.seed = setUp.mapParam.seed;
+            numberOfChunk = setUp.mapParam.chunks;
+            mapGenerator.meshHeightMultiplier = setUp.mapParam.highCoeff;
+            mapGenerator.regions = new TerrainType[setUp.mapParam.regions.Count];
+            for (int i = 0; i < setUp.mapParam.regions.Count; i++)
             {
-                mapGenerator.regions[i] = set.mapParam.regions[i];
+                mapGenerator.regions[i] = setUp.mapParam.regions[i];
             }
         }
         CreateWorld();
-        HandleText.RunProcess("test.txt");
 
     }
 
@@ -57,13 +56,16 @@ public class CreateTerrain : MonoBehaviour
         {
             for (int j = 0; j < numberOfChunk; j++)
             {
-                TerrainChunk tmp = new TerrainChunk(new Vector2(i,j), chunkSize, transform, mapMaterial, prefabWaterPlane);
-                //HandleText.WriteData("Assets/Ressources/test.txt", tmp.mapData);
-            }
-            
+                BuldingParam tmpBld = null;
+                if (setUp.setOfBulding.buldings.Count > 0)
+                {
+                    tmpBld = setUp.setOfBulding.buldings[setUp.setOfBulding.buldings.Count - 1];
+                    setUp.setOfBulding.buldings.RemoveAt(setUp.setOfBulding.buldings.Count - 1);
+                }
+                TerrainChunk tmp = new TerrainChunk(new Vector2(i,j), chunkSize, transform, mapMaterial, prefabWaterPlane, tmpBld, prefabBulding);
+            } 
         }
         
-
     }
 
     public class TerrainChunk
@@ -77,13 +79,16 @@ public class CreateTerrain : MonoBehaviour
 
         public MapData mapData;
         GameObject prefabWaterPlane;
+        GameObject prefabBulding;
 
 
         bool alreadyMaze = false;
 
-        public TerrainChunk(Vector2 coord, int size, Transform parent, Material material,GameObject prefabWaterPlane)
+        public TerrainChunk(Vector2 coord, int size, Transform parent, Material material,
+            GameObject prefabWaterPlane, BuldingParam bldParam, GameObject prefabBulding)
         {
             this.prefabWaterPlane = prefabWaterPlane;
+            this.prefabBulding = prefabBulding;
 
             position = coord * size;
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
@@ -101,21 +106,32 @@ public class CreateTerrain : MonoBehaviour
             GameObject water = Instantiate(prefabWaterPlane, meshObject.transform);
             water.transform.localScale = Vector3.one * MapGenerator.mapChunkSize / 10;
 
-            CreateMapChunk(mapGenerator.GenerateMapData(position), position);
+            CreateMapChunk(mapGenerator.GenerateMapData(position), position, bldParam);
         }
 
-        void CreateMapChunk(MapData mapData, Vector2 position)
+        void CreateMapChunk(MapData mapData, Vector2 position, BuldingParam bldParam)
         {
             this.mapData = mapData;
-            System.Random prng = new System.Random(Mathf.RoundToInt(1000 * position.x + position.y));
-            float r = prng.Next(0, 100) / 100f;
 
-            if (r >= 0.6f && !alreadyMaze)
+            if (bldParam != null && !alreadyMaze)
             {
                 alreadyMaze = true;
-                GameObject lab = new GameObject("lab");
-                lab.transform.SetParent(meshObject.transform);
-                lab.transform.localPosition = new Vector3(0, 0, 0);
+                GameObject bldGO = Instantiate(prefabBulding);
+                SetBuildingParam(bldGO.GetComponent<Building>(), bldParam);
+                bldGO.transform.SetParent(meshObject.transform);
+                bldGO.transform.localPosition = new Vector3(-bldParam.width, 0, -bldParam.length);
+
+                //int half = MapGenerator.mapChunkSize / 2;
+                //for (int i = half - 6; i < half + 96; i++)
+                //{
+                //    for (int j = half - 46; j < half + 6; j++)
+                //    {
+                //        mapData.heighMap[i, j] = 0.5f;
+                //        mapData.colourMap[j * MapGenerator.mapChunkSize + i] = Color.grey;
+
+                //    }
+                //}
+
             }
 
             Texture2D texture = TextureGenerator.TextureFromColourMap(mapData.colourMap, MapGenerator.mapChunkSize, MapGenerator.mapChunkSize);
@@ -125,6 +141,18 @@ public class CreateTerrain : MonoBehaviour
             meshFilter.mesh = meshData.CreateMesh();
             meshCollider = meshObject.AddComponent<MeshCollider>();
             meshCollider.sharedMesh = meshFilter.mesh;
+        }
+
+        public void SetBuildingParam(Building b, BuldingParam p)
+        {
+            print(p.buldingName);
+            b.width = p.width;
+            b.height = p.height;
+            b.length = p.length;
+            b.windowProbability = p.windowProbability;
+            b.minPartitionSize = p.minPartitionSize;
+            b.maxPartitionSize = p.maxPartitionSize;
+            b.volumeReduction = p.volumeReduction;
         }
     }
 }
