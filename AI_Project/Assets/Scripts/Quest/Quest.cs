@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Quest : ConstraintObject
+public class Quest 
 {
 
     public string questName;
