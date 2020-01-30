@@ -487,6 +487,21 @@ PrefabInstance:
       propertyPath: surface
       value: 
       objectReference: {fileID: 8089832898424828232}
+    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: height
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: volumeReduction
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3130869653559867623, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: m_CollectObjects
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -2194802686461219724, guid: b4be5fe9939f9a94c8594c86e1e9a423,
         type: 3}
       propertyPath: m_CollectObjects
@@ -496,11 +511,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_UseGeometry
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3130869653559867623, guid: b4be5fe9939f9a94c8594c86e1e9a423,
-        type: 3}
-      propertyPath: m_CollectObjects
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -2194802686461219724, guid: b4be5fe9939f9a94c8594c86e1e9a423, type: 3}

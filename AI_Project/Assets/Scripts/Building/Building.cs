@@ -141,20 +141,21 @@ public class Building : MonoBehaviour
         }
 
         // Delete some rectangles on the border
-        if (border.Count > 0) {
-            for (int k = 0; k < Mathf.Min(count, rects.Count - 1); k++) {
-                int idx = Random.Range(0, border.Count);
-                RectInt rect = border[idx];
-                //Debug.Log(string.Format("Deleting rectangle {0}", rect));
-                border.RemoveAt(idx);
+        for (int k = 0; k < Mathf.Min(count, rects.Count - 1); k++) {
+            if (border.Count == 0) {
+                break; // Nothing more in the border
+            }
+            int idx = Random.Range(0, border.Count);
+            RectInt rect = border[idx];
+            //Debug.Log(string.Format("Deleting rectangle {0}", rect));
+            border.RemoveAt(idx);
 
-                // Some rectangles from the inside are now on the border
-                for (int i = inside.Count - 1; i >= 0; i--) { // from last to first
-                    if (Area.TouchingEdges(rect, inside[i]).Count > 0) {
-                        //print("switching");
-                        border.Add(inside[i]); // /!\ Bug here
-                        inside.RemoveAt(i);    // /!\ or here
-                    }
+            // Some rectangles from the inside are now on the border
+            for (int i = inside.Count - 1; i >= 0; i--) { // from last to first
+                if (Area.TouchingEdges(rect, inside[i]).Count > 0) {
+                    //print("switching");
+                    border.Add(inside[i]); // /!\ Bug here
+                    inside.RemoveAt(i);    // /!\ or here
                 }
             }
         }
