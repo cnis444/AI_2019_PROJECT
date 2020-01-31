@@ -379,6 +379,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7556097003781313433}
   - component: {fileID: 7556097003781313432}
+  - component: {fileID: 7440538735663928320}
   - component: {fileID: 7556097003781313439}
   - component: {fileID: 7556097003781313434}
   - component: {fileID: 7556097003539878687}
@@ -439,7 +440,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -450,6 +451,61 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &7440538735663928320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7556097003781313438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855c24b21068ca6449a4680af0c5645e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateGI: 1
+  giCullingMask:
+    serializedVersion: 2
+    m_Bits: 2147483647
+  shadowSpaceSize: 50
+  sun: {fileID: 0}
+  skyColor: {r: 0, g: 0, b: 0, a: 0}
+  voxelSpaceSize: 25
+  useBilateralFiltering: 0
+  innerOcclusionLayers: 1
+  temporalBlendWeight: 0.1
+  voxelResolution: 256
+  visualizeSunDepthTexture: 0
+  visualizeGI: 0
+  visualizeVoxels: 0
+  halfResolution: 1
+  stochasticSampling: 1
+  infiniteBounces: 0
+  followTransform: {fileID: 0}
+  cones: 6
+  coneTraceSteps: 14
+  coneLength: 1
+  coneWidth: 5.5
+  occlusionStrength: 1
+  nearOcclusionStrength: 0.5
+  occlusionPower: 1.5
+  coneTraceBias: 1
+  nearLightGain: 1
+  giGain: 1
+  secondaryBounceGain: 1
+  softSunlight: 0
+  skyIntensity: 1
+  doReflections: 1
+  reflectionSteps: 64
+  reflectionOcclusionPower: 1
+  skyReflectionIntensity: 1
+  voxelAA: 0
+  gaussianMipFilter: 0
+  farOcclusionStrength: 1
+  farthestOcclusionStrength: 1
+  secondaryCones: 6
+  secondaryOcclusionStrength: 1
+  sphericalSkylight: 0
 --- !u!81 &7556097003781313439
 AudioListener:
   m_ObjectHideFlags: 0
@@ -651,11 +707,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7179657686496958908, guid: d631c01bd38dc804999232cbf0bc0a6c,
-        type: 3}
-      propertyPath: speed
-      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d631c01bd38dc804999232cbf0bc0a6c, type: 3}
