@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3051847631294351834}
   - component: {fileID: 8747923603000997155}
   - component: {fileID: 5219995965536293945}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Elevator Floor Separation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

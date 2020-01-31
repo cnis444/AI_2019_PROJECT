@@ -17,6 +17,7 @@ public class CreateTerrain : MonoBehaviour
     private SetUp setUp;
 
     public GameObject prefabBulding;
+    public GameObject prefabGuard;
 
     private void Start()
     {
@@ -75,7 +76,8 @@ public class CreateTerrain : MonoBehaviour
                     }
 
                 }
-                TerrainChunk tmp = new TerrainChunk(new Vector2(i,j), chunkSize, transform, mapMaterial, prefabWaterPlane, tmpBld, prefabBulding, tmpNPC);
+                TerrainChunk tmp = new TerrainChunk(new Vector2(i,j), chunkSize, transform, mapMaterial,
+                    prefabWaterPlane, tmpBld, prefabBulding, tmpNPC, prefabGuard);
             } 
         }
         
@@ -93,16 +95,18 @@ public class CreateTerrain : MonoBehaviour
         public MapData mapData;
         GameObject prefabWaterPlane;
         GameObject prefabBulding;
+        GameObject prefabGuard;
 
 
         bool alreadyMaze = false;
 
         public TerrainChunk(Vector2 coord, int size, Transform parent, Material material,
             GameObject prefabWaterPlane, BuldingParam bldParam, GameObject prefabBulding,
-            NPCParam npc)
+            NPCParam npc, GameObject prefabGuard)
         {
             this.prefabWaterPlane = prefabWaterPlane;
             this.prefabBulding = prefabBulding;
+            this.prefabGuard = prefabGuard;
 
             position = coord * size;
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
@@ -151,7 +155,7 @@ public class CreateTerrain : MonoBehaviour
 
                     for (int i = 0; i < npc.numberOf; i++)
                     {
-                        GameObject tmpNpc = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                        GameObject tmpNpc = Instantiate(prefabGuard);
                         tmpNpc.name = npc.NPCName;
                         tmpNpc.transform.SetParent(bldGO.transform);
                         tmpNpc.transform.localPosition = new Vector3(Random.Range(0, bldParam.width), 1.2f + 2.5f *Random.Range(0, bldParam.height), Random.Range(0,bldParam.length));

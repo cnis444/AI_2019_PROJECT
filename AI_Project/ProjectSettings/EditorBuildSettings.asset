@@ -11,4 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MapGeneration.unity
     guid: e053af23c13559a43a282dd13794d333
+  - enabled: 1
+    path: Assets/Scenes/AI.unity
+    guid: 55789521f3035704cbb1be61397de848
+  - enabled: 1
+    path: Assets/Scenes/Building.unity
+    guid: 5a4d9eb132e886d4daeae7a552daf528
+  - enabled: 1
+    path: Assets/Scenes/Movement.unity
+    guid: ae1dd7be968b2b54ba0788e411d4a7a6
+  - enabled: 1
+    path: Assets/Scenes/Quest.unity
+    guid: 984192fbb8783da4caf266e9a357975b
   m_configObjects: {}

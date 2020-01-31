@@ -719,7 +719,7 @@ public class ButtonMenu : MonoBehaviour
             alertMsg += "\n\t name invalid";
         }
 
-        if (nextNPC.NPCName != null || nextNPC.numberOf <= 1)
+        if (nextNPC.numberOf <= 1)
         {
             error = true;
             alertMsg += "\n\t NPC number";
@@ -792,6 +792,7 @@ public class ButtonMenu : MonoBehaviour
         else
         {
             ActiveOnePanel(panels[10]);
+            ActivePipelinePanel(true);
             string save = JsonUtility.ToJson(selectedNPC);
             string path = Path.Combine(Application.persistentDataPath, "NPCs", selectedNPC.setName + ".json");
             File.WriteAllText(path, save);
@@ -801,6 +802,8 @@ public class ButtonMenu : MonoBehaviour
             #if UNITY_EDITOR
             UnityEditor.AssetDatabase.Refresh();
             #endif
+
+
         }
 
         Debug.Log(
@@ -1143,6 +1146,10 @@ public class ButtonMenu : MonoBehaviour
 
     #region OPTION BUTTON
 
+    public void GoToScene(int n)
+    {
+        SceneManager.LoadScene(n);
+    }
 
     #endregion
 

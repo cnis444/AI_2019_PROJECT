@@ -19,7 +19,7 @@ public class NPCUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gameObject.transform.LookAt(Camera.main.transform);
+        
     }
 
     public void SetInfo(string name, string role)

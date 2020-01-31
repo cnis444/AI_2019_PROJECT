@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2237819396122714559}
   - component: {fileID: 1362197975524196701}
   - component: {fileID: 8828149503476493171}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Elevator Rod
   m_TagString: Untagged
   m_Icon: {fileID: 0}

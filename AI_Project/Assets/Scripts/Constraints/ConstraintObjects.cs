@@ -9,3 +9,18 @@ public class ConstraintObject : MonoBehaviour
     public int maxEntity { get; set; }
 
 }
+
+public class BaseConstraint : ConstraintObject
+{
+
+}
+
+public class GuardConstraint : ConstraintObject
+{
+
+}
+
+public class ChiefConstraint : ConstraintObject
+{
+
+}

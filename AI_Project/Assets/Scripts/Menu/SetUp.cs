@@ -24,15 +24,33 @@ public class SetUp : MonoBehaviour
     {
         sol.objects.Clear();
 
+        BaseConstraint baseConstraint = new BaseConstraint();
+        List<Constraint> baseC = new List<Constraint>();
+        baseC.Add(new NumberEntityGreaterStrictConstraint(typeof(BaseConstraint), 2));
+        baseC.Add(new NumberEntityLessStrictConstraint(typeof(BaseConstraint), 8));
+        baseConstraint.Constraints = baseC;
 
-        //foreach (NPCParam item in setOfNPC.NPCs)
-        //{
-        //    ConstraintObject tmpC = new ConstraintObject();
-        //    tmpC.maxEntity = item.numberOf;
-        //    tmpC.Constraints = new List<Constraint>();
-        //}
+        List<Constraint> chiefC = new List<Constraint>();
+        chiefC.Add(new NumberEntityPerEntityGreaterStrictConstraint(typeof(ChiefConstraint),typeof( GuardConstraint), 2, "Joffrey t nul"));
+        chiefC.Add(new NumberEntityPerEntityLessStrictConstraint(typeof(ChiefConstraint), typeof(GuardConstraint), 8, "Joffrey t nul"));
 
-        
+        ChiefConstraint chiefConstraint = new ChiefConstraint();
+        chiefConstraint.Constraints = chiefC;
+        GuardConstraint guardConstraint = new GuardConstraint();
+        guardConstraint.maxEntity = 12;
+
+        sol.objects.Add(baseConstraint);
+        sol.objects.Add(chiefConstraint);
+        sol.objects.Add(guardConstraint);
+
+        List<Constraint> guide = new List<Constraint>();
+        guide.Add(new NumberEntityPerEntityGreaterConstraint(typeof(GuardConstraint), typeof(BaseConstraint), 1, "copy pasta"));
+        guide.Add(new EntityRelativeDistanceGreaterStrictConstraint(typeof(BaseConstraint), typeof(BaseConstraint), 50));
+
+        //sol.Solve(guide);
+
+
+
         GameObject tmpPlay = GameObject.Find("PlayButton");
         if (tmpPlay != null)
         {

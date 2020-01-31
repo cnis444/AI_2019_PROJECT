@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.29411766, g: 0.30588236, b: 0.32941177, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
@@ -2107,6 +2107,8 @@ MonoBehaviour:
     type: 3}
   prefabBulding: {fileID: 8089832899000454034, guid: b4be5fe9939f9a94c8594c86e1e9a423,
     type: 3}
+  prefabGuard: {fileID: 7732153557650962379, guid: eea33e9b031b41946ae5d50abf30a870,
+    type: 3}
 --- !u!4 &836957737
 Transform:
   m_ObjectHideFlags: 0
@@ -3247,7 +3249,7 @@ PrefabInstance:
     - target: {fileID: 7556097003133042276, guid: dcc3eee0a510e6549b6ce70483d8700e,
         type: 3}
       propertyPath: m_Name
-      value: First Person Player
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7556097003133042278, guid: dcc3eee0a510e6549b6ce70483d8700e,
         type: 3}
@@ -3303,6 +3305,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7556097003133042279, guid: dcc3eee0a510e6549b6ce70483d8700e,
+        type: 3}
+      propertyPath: walkSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7556097003133042279, guid: dcc3eee0a510e6549b6ce70483d8700e,
+        type: 3}
+      propertyPath: runSpeed
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dcc3eee0a510e6549b6ce70483d8700e, type: 3}
