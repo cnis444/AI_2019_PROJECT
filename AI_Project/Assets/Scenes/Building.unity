@@ -497,6 +497,16 @@ PrefabInstance:
       propertyPath: volumeReduction
       value: 0.15
       objectReference: {fileID: 0}
+    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: useRandomSeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8089832899000454033, guid: b4be5fe9939f9a94c8594c86e1e9a423,
+        type: 3}
+      propertyPath: seed
+      value: 1541796501
+      objectReference: {fileID: 0}
     - target: {fileID: 3130869653559867623, guid: b4be5fe9939f9a94c8594c86e1e9a423,
         type: 3}
       propertyPath: m_CollectObjects

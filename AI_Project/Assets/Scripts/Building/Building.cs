@@ -75,11 +75,12 @@ public class Building : MonoBehaviour
         // Set an elevator
         if (height > 1) {
             List<Vector2> coords = new List<Vector2>();
+            // Set elevator position from smallest floor (last)
             foreach (RectInt r in floorsRect[floors.Length - 1]) {
                 for (int x = r.xMin; x < r.xMax; x++) {
                     for (int z = r.yMin; z < r.yMax; z++) {
                         Vector2 loc = new Vector2(x + 0.5f, z + 0.5f);
-                        if (floorsArea[0].Contain(loc, true)) {
+                        if (floorsArea[0].Contain(loc)) {
                             coords.Add(loc);
                         }
                     }
@@ -87,6 +88,8 @@ public class Building : MonoBehaviour
             }
             if(coords.Count > 0)
                 elevatorPos = coords[Random.Range(0, coords.Count)];
+            else
+                elevatorPos = new Vector2(-1, -1);
         }
         else {
             elevatorPos = new Vector2(-1, -1);
@@ -97,7 +100,9 @@ public class Building : MonoBehaviour
         for (int k = 0; k < height; k++) {
             Build(k);
         }
-        InstanciateElevator();
+        if (elevatorPos != new Vector2(-1, -1)) {
+            InstanciateElevator();
+        }
 
         surface.BuildNavMesh(); // Build navmesh surface
 
@@ -176,19 +181,21 @@ public class Building : MonoBehaviour
     }
 
     void BuildWall(int h) {
-        List<Vector3> corners = new List<Vector3>();
-        for (int i = 0; i < area.Main.Count; i++) {
-            corners.Add(new Vector3(area.Main[i].x, h, area.Main[i].y));
-        }
-
         floors[h] = new List<Wall>();
-        if (corners.Count > 0) {
-            for (int i = 0; i < corners.Count - 1; i++) {
-                floors[h].Add(new Wall(corners[i], corners[i + 1]));
+        foreach (List<Vector2> surface in area.Surfaces) {
+            List<Vector3> corners = new List<Vector3>();
+            for (int i = 0; i < surface.Count; i++) {
+                corners.Add(new Vector3(surface[i].x, h, surface[i].y));
             }
-            floors[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
+
+            if (corners.Count > 0) {
+                for (int i = 0; i < corners.Count - 1; i++) {
+                    floors[h].Add(new Wall(corners[i], corners[i + 1]));
+                }
+                floors[h].Add(new Wall(corners[corners.Count - 1], corners[0]));
+            }
+            //Debug.Log(ListToString(floors[h]));
         }
-        //Debug.Log(ListToString(floors[h]));
     }
 
     void BuildArea(int h) {
@@ -266,7 +273,7 @@ public class Building : MonoBehaviour
                     if (loc != elevatorPos || h == height - 1) {
                         Vector3 pos = new Vector3((x + 0.5f) * theme.roofDim.x, theme.wallDim.y * (h + 1) - theme.roofDim.y / 2, (z + 0.5f) * theme.roofDim.z);
                         pos.y += 0.001f; // texture clipping protection
-                        if (floorsArea[h].Contain(loc, true)) {
+                        if (floorsArea[h].Contain(loc)) {
                             var roof = Instantiate(theme.roofPrefab);
                             roof.transform.parent = transform;
                             roof.transform.localPosition = pos;
