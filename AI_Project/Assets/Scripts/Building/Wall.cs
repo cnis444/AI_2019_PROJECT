@@ -23,9 +23,13 @@ public class Wall
     }
 
     public void AddDoor() {
-        int idx = Random.Range(0, types.Length);
-        if(types.Length > 0)
+        if (types.Length > 0) {
+            int idx = Random.Range(0, types.Length);
             types[idx] = WallType.Door;
+        }
+        else {
+            Debug.LogWarning("Trying to add a door on a wall of size 0");
+        }
     }
 
     public void AddWindows(float probability) {
