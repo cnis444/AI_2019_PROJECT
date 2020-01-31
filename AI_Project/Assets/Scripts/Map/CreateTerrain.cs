@@ -123,7 +123,7 @@ public class CreateTerrain : MonoBehaviour
                 GameObject bldGO = Instantiate(prefabBulding);
                 SetBuildingParam(bldGO.GetComponent<Building>(), bldParam);
                 bldGO.transform.SetParent(meshObject.transform);
-                bldGO.transform.localPosition = new Vector3(-bldParam.width, 1.8f, -bldParam.length);
+                bldGO.transform.localPosition = new Vector3(-bldParam.width, 2.5f, -bldParam.length);
 
                 int half = MapGenerator.mapChunkSize / 2;
                 for (int i = half - bldParam.width-2; i < half + bldParam.width+2; i++)

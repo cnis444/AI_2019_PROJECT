@@ -63,6 +63,9 @@ public class SetUp : MonoBehaviour
                 tmpQuestManager.questsInactive.Add(tmpQuest);
         }
 
+
+        
+
     }
 
 
