@@ -57,6 +57,7 @@ public class CreateTerrain : MonoBehaviour
             for (int j = 0; j < numberOfChunk; j++)
             {
                 BuldingParam tmpBld = null;
+                NPCParam tmpNPC = null;
                 if (setUp != null)
                 {
                     float r = Random.Range(0f, 1f);
@@ -64,9 +65,17 @@ public class CreateTerrain : MonoBehaviour
                     {
                         tmpBld = setUp.setOfBulding.buldings[setUp.setOfBulding.buldings.Count - 1];
                         setUp.setOfBulding.buldings.RemoveAt(setUp.setOfBulding.buldings.Count - 1);
+
+                        if (setUp.setOfNPC.NPCs.Count > 0)
+                        {
+                            tmpNPC = setUp.setOfNPC.NPCs[setUp.setOfNPC.NPCs.Count - 1];
+                            setUp.setOfNPC.NPCs.RemoveAt(setUp.setOfNPC.NPCs.Count - 1);
+                        }
+
                     }
+
                 }
-                TerrainChunk tmp = new TerrainChunk(new Vector2(i,j), chunkSize, transform, mapMaterial, prefabWaterPlane, tmpBld, prefabBulding);
+                TerrainChunk tmp = new TerrainChunk(new Vector2(i,j), chunkSize, transform, mapMaterial, prefabWaterPlane, tmpBld, prefabBulding, tmpNPC);
             } 
         }
         
@@ -89,7 +98,8 @@ public class CreateTerrain : MonoBehaviour
         bool alreadyMaze = false;
 
         public TerrainChunk(Vector2 coord, int size, Transform parent, Material material,
-            GameObject prefabWaterPlane, BuldingParam bldParam, GameObject prefabBulding)
+            GameObject prefabWaterPlane, BuldingParam bldParam, GameObject prefabBulding,
+            NPCParam npc)
         {
             this.prefabWaterPlane = prefabWaterPlane;
             this.prefabBulding = prefabBulding;
@@ -110,10 +120,10 @@ public class CreateTerrain : MonoBehaviour
             GameObject water = Instantiate(prefabWaterPlane, meshObject.transform);
             water.transform.localScale = Vector3.one * MapGenerator.mapChunkSize / 10;
 
-            CreateMapChunk(mapGenerator.GenerateMapData(position), position, bldParam);
+            CreateMapChunk(mapGenerator.GenerateMapData(position), position, bldParam, npc);
         }
 
-        void CreateMapChunk(MapData mapData, Vector2 position, BuldingParam bldParam)
+        void CreateMapChunk(MapData mapData, Vector2 position, BuldingParam bldParam, NPCParam npc)
         {
             this.mapData = mapData;
 
@@ -121,6 +131,7 @@ public class CreateTerrain : MonoBehaviour
             {
                 alreadyMaze = true;
                 GameObject bldGO = Instantiate(prefabBulding);
+                bldGO.name = bldParam.buldingName;
                 SetBuildingParam(bldGO.GetComponent<Building>(), bldParam);
                 bldGO.transform.SetParent(meshObject.transform);
                 bldGO.transform.localPosition = new Vector3(-bldParam.width, 2.5f, -bldParam.length);
@@ -133,6 +144,17 @@ public class CreateTerrain : MonoBehaviour
                         mapData.heighMap[i, j] = 0.55f;
                         mapData.colourMap[j * MapGenerator.mapChunkSize + i] = Color.grey;
 
+                    }
+                }
+                if (npc != null)
+                {
+
+                    for (int i = 0; i < npc.numberOf; i++)
+                    {
+                        GameObject tmpNpc = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                        tmpNpc.name = npc.NPCName;
+                        tmpNpc.transform.SetParent(bldGO.transform);
+                        tmpNpc.transform.localPosition = new Vector3(Random.Range(0, bldParam.width), 1.2f + 2.5f *Random.Range(0, bldParam.height), Random.Range(0,bldParam.length));
                     }
                 }
 
