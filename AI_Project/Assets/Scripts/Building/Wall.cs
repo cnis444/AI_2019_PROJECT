@@ -24,7 +24,8 @@ public class Wall
 
     public void AddDoor() {
         int idx = Random.Range(0, types.Length);
-        types[idx] = WallType.Door;
+        if(types.Length > 0)
+            types[idx] = WallType.Door;
     }
 
     public void AddWindows(float probability) {

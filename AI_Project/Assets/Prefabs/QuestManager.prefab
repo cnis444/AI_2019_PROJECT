@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5339758705800556313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5339758705800556519}
+  - component: {fileID: 5339758705800556312}
+  m_Layer: 0
+  m_Name: QuestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5339758705800556519
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339758705800556313}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.434099, y: -0.91160965, z: -74.23499}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5339758705800556312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339758705800556313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dd7297b2335e4db8abc141281af45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  questsActive:
+  - questName: Save your friend
+    id: 0
+    questDescription: DO something
+    levelOder: 0
+    maxOrder: 2
+    missions:
+    - missionName: collect blue
+      missionDescription: Collect 3 blue plant
+      missionKey: blue plant
+      objectif: 3
+      max: 2
+      current: 0
+      order: 0
+      finish: 0
+    - missionName: collect green
+      missionDescription: Collect 3 green plant
+      missionKey: green plant
+      objectif: 3
+      max: 2
+      current: 0
+      order: 0
+      finish: 0
+    - missionName: create potion
+      missionDescription: Create a potion to heal your friend
+      missionKey: potion
+      objectif: 3
+      max: 1
+      current: 0
+      order: 1
+      finish: 0
+    - missionName: 'Heal '
+      missionDescription: Heal your friend
+      missionKey: friend
+      objectif: 3
+      max: 1
+      current: 0
+      order: 2
+      finish: 0
+    next: 0100000002000000
+    finish: 0
+  questsInactive:
+  - questName: Rescue your girlfriend
+    id: 1
+    questDescription: Save your Girlfriend
+    levelOder: 0
+    maxOrder: 2
+    missions:
+    - missionName: Go to
+      missionDescription: Go to the next zone
+      missionKey: zone1
+      objectif: 4
+      max: 1
+      current: 0
+      order: 0
+      finish: 0
+    - missionName: Kill
+      missionDescription: Kill the guard
+      missionKey: guard
+      objectif: 0
+      max: 4
+      current: 0
+      order: 1
+      finish: 0
+    - missionName: Destroy Wall
+      missionDescription: open the prison
+      missionKey: wall
+      objectif: 2
+      max: 1
+      current: 0
+      order: 1
+      finish: 0
+    - missionName: Rescue
+      missionDescription: get the girl
+      missionKey: girl
+      objectif: 1
+      max: 1
+      current: 0
+      order: 2
+      finish: 0
+    next: 
+    finish: 0
+  - questName: Kill your nemesis
+    id: 2
+    questDescription: The final Fight
+    levelOder: 0
+    maxOrder: 2
+    missions:
+    - missionName: Go to 2
+      missionDescription: go to zone 2
+      missionKey: zone2
+      objectif: 4
+      max: 1
+      current: 0
+      order: 0
+      finish: 0
+    - missionName: Survive
+      missionDescription: survive 15s
+      missionKey: survive
+      objectif: 5
+      max: 1
+      current: 0
+      order: 1
+      finish: 0
+    - missionName: KKKIIILLLL !!!
+      missionDescription: MURDER !!!!!
+      missionKey: end
+      objectif: 0
+      max: 1
+      current: 0
+      order: 2
+      finish: 0
+    next: 
+    finish: 0
+  questsFinish: []

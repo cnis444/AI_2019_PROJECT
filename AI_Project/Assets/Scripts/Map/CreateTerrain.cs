@@ -57,10 +57,14 @@ public class CreateTerrain : MonoBehaviour
             for (int j = 0; j < numberOfChunk; j++)
             {
                 BuldingParam tmpBld = null;
-                if (setUp.setOfBulding.buldings.Count > 0)
+                if (setUp != null)
                 {
-                    tmpBld = setUp.setOfBulding.buldings[setUp.setOfBulding.buldings.Count - 1];
-                    setUp.setOfBulding.buldings.RemoveAt(setUp.setOfBulding.buldings.Count - 1);
+                    float r = Random.Range(0f, 1f);
+                    if (setUp.setOfBulding.buldings.Count > 0 && (r < 0.08 || ((numberOfChunk * numberOfChunk) - (i * numberOfChunk + j)) <= setUp.setOfBulding.buldings.Count))
+                    {
+                        tmpBld = setUp.setOfBulding.buldings[setUp.setOfBulding.buldings.Count - 1];
+                        setUp.setOfBulding.buldings.RemoveAt(setUp.setOfBulding.buldings.Count - 1);
+                    }
                 }
                 TerrainChunk tmp = new TerrainChunk(new Vector2(i,j), chunkSize, transform, mapMaterial, prefabWaterPlane, tmpBld, prefabBulding);
             } 
@@ -126,7 +130,7 @@ public class CreateTerrain : MonoBehaviour
                 {
                     for (int j = half - bldParam.length-2; j < half + bldParam.length+2 ; j++)
                     {
-                        mapData.heighMap[i, j] = 0.5f;
+                        mapData.heighMap[i, j] = 0.55f;
                         mapData.colourMap[j * MapGenerator.mapChunkSize + i] = Color.grey;
 
                     }
@@ -145,7 +149,6 @@ public class CreateTerrain : MonoBehaviour
 
         public void SetBuildingParam(Building b, BuldingParam p)
         {
-            print(p.buldingName);
             b.width = p.width;
             b.height = p.height;
             b.length = p.length;
@@ -153,6 +156,7 @@ public class CreateTerrain : MonoBehaviour
             b.minPartitionSize = p.minPartitionSize;
             b.maxPartitionSize = p.maxPartitionSize;
             b.volumeReduction = p.volumeReduction;
+            b.useRandomSeed = true;
         }
     }
 }

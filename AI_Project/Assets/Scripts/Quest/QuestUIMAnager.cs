@@ -26,15 +26,20 @@ public class QuestUIMAnager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            questPanel.SetActive(!questPanel.activeSelf);
-            SetUpCurrentQuest();
-            SetUpFinishQuest();
+            if (GameObject.Find("QuestManager") != null)
+            {
+                Cursor.lockState = Cursor.lockState == CursorLockMode.None ? CursorLockMode.Locked : CursorLockMode.None;
+                questPanel.SetActive(!questPanel.activeSelf);
+                SetUpCurrentQuest();
+                SetUpFinishQuest();
+            }
         }
     }
 
     public void Quit()
     {
         questPanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void SetUpQuestDsc(Quest q)

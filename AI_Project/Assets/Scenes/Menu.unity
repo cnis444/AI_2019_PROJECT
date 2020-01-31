@@ -14611,6 +14611,85 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 508997295}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &695140834
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5339758705800556313, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_Name
+      value: QuestManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556519, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556312, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: questsActive.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339758705800556312, guid: cae32984db65f5746a50f75a36469303,
+        type: 3}
+      propertyPath: questsInactive.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cae32984db65f5746a50f75a36469303, type: 3}
 --- !u!1 &699594534
 GameObject:
   m_ObjectHideFlags: 0
@@ -44568,6 +44647,70 @@ MonoBehaviour:
       maxPartitionSize: 3
       volumeReduction: 0.1
     - buldingName: b2
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b3
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b4
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b5
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b6
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b7
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b8
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b9
+      width: 20
+      length: 20
+      height: 6
+      windowProbability: 0.3
+      minPartitionSize: 1
+      maxPartitionSize: 3
+      volumeReduction: 0.15
+    - buldingName: b10
       width: 20
       length: 20
       height: 6

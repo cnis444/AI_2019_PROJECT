@@ -85,7 +85,8 @@ public class Building : MonoBehaviour
                     }
                 }
             }
-            elevatorPos = coords[Random.Range(0, coords.Count)];
+            if(coords.Count > 0)
+                elevatorPos = coords[Random.Range(0, coords.Count)];
         }
         else {
             elevatorPos = new Vector2(-1, -1);

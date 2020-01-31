@@ -17,7 +17,7 @@ MonoBehaviour:
   persistance: 0.45
   lacunarity: 2.2
   seed: 0
-  chunks: 20
+  chunks: 10
   highCoeff: 60
   regions:
   - name: deep water
